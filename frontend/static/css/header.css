@@ -1,0 +1,96 @@
+:root {
+    --background: #2c2f33;
+    --btn1: #8E1616;
+    --btn2: #D84040;
+    --text: #EEEEEE;
+    --white: #ffffff
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+header {
+    background-color: var(--background);
+    border-bottom: solid 3px var(--btn2);
+}
+
+header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+}
+
+header nav .logo {
+    text-decoration: none;
+    color: var(--btn2);
+    font-weight: 700;
+    font-size: 2.5em;
+}
+
+header nav ul {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    list-style: none;
+}
+
+header nav ul>li>a {
+    text-decoration: none;
+    color: var(--white);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 10px;
+    border: 1px solid var(--btn2);
+    padding: 8px 16px;
+    transition: .6s;
+    font-weight: 500;
+}
+
+header nav ul>li>a:hover{
+    background-color: var(--btn2);
+
+}
+
+header nav ul>li>a>svg {
+    display: block;
+}
+
+header nav ul>li form button {
+    display: flex;
+    background-color: var(--btn2);
+    padding: 8px 16px;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    color: var(--white);
+    gap: 8px;
+    align-items: center;
+    font-weight: 500;
+    cursor: pointer;
+    transition: .4s;
+}
+
+header nav ul>li .auth {
+    display: inline;
+    background-color: var(--btn2);
+    padding: 8px 16px;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    color: var(--white);
+    margin-left: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: .4s;
+}
+
+header nav ul>li .auth:hover {
+    background-color: var(--btn1);
+}

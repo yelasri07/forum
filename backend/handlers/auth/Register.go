@@ -1,0 +1,118 @@
+package auth
+
+import (
+	"database/sql"
+	"net/http"
+	"time"
+
+	"forum/backend/handlers"
+	"forum/backend/models"
+	"forum/middleware"
+
+	"golang.org/x/crypto/bcrypt"
+)
+
+func Register(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	if r.Method != http.MethodPost {
+		http.Redirect(w, r, "/sign-up", http.StatusSeeOther)
+		return
+	}
+
+	err := r.ParseForm()
+	if err != nil {
+		handlers.RenderError(w, http.StatusBadRequest)
+		return
+	}
+
+	UserName := r.FormValue("UserName")
+	Email := r.FormValue("Email")
+
+	if UserName == "" {
+		e := &models.ErrorRegister{ErrName: "Username cannot be emty"}
+		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
+		return
+	}
+
+	if Email == "" {
+		e := &models.ErrorRegister{ErrEmail: "Email cannot be emty"}
+		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
+		return
+	}
+
+	// here we need to check password using regex
+
+	password, _ := bcrypt.GenerateFromPassword([]byte(r.FormValue("Password")), 10)
+	Password := string(password)
+
+	isUniqueUserName, err := models.UserExists(db, UserName, " UserName ")
+	if err != nil {
+		handlers.RenderError(w, http.StatusServiceUnavailable)
+		return
+	}
+
+	isUniqueEmail, err := models.UserExists(db, Email, " Email ")
+	if err != nil {
+		handlers.RenderError(w, http.StatusServiceUnavailable)
+		return
+	}
+
+	if !Verify(w, isUniqueUserName, isUniqueEmail) {
+		return
+	}
+
+	result, _ := db.Exec("INSERT INTO Users VALUES (?, ?, ?,?,?,?,?)", nil, UserName, Email, Password, time.Now().Format(time.DateTime), "", nil)
+
+	ID, _ := result.LastInsertId()
+
+	token, err := models.GenerateToken(int(ID), db)
+	if err != nil {
+		handlers.RenderError(w, http.StatusInternalServerError)
+		return
+	}
+
+	cookie := &http.Cookie{Name: "Token", Value: token, MaxAge: 3600, HttpOnly: true}
+
+	http.SetCookie(w, cookie)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func Verify(w http.ResponseWriter, isUniqueUserName, isUniqueEmail bool) bool {
+	if !isUniqueUserName && !isUniqueEmail {
+		e := &models.ErrorRegister{ErrName: "Username Already taken please chose Another", ErrEmail: "Email Already taken please chose Another"}
+		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
+		return false
+	}
+
+	if !isUniqueUserName {
+		e := &models.ErrorRegister{ErrName: "Username Already taken please chose Another"}
+		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
+		return false
+	}
+
+	if !isUniqueEmail {
+		e := &models.ErrorRegister{ErrEmail: "Email Already taken please chose Another"}
+		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
+		return false
+	}
+
+	return true
+}
+
+func RegisterPage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	if r.Method != http.MethodGet {
+		handlers.RenderError(w, http.StatusMethodNotAllowed)
+		return
+	}
+
+	_, err := middleware.VerifyCookie(r, db)
+	if err == nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	err = handlers.RenderTemplate(w, "register.html", nil, http.StatusOK)
+	if err != nil {
+		handlers.RenderError(w, http.StatusInternalServerError)
+		return
+	}
+}

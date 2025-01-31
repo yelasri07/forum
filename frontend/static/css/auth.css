@@ -1,0 +1,199 @@
+:root {
+    --background: #2c2f33;
+    --btn1: #8E1616;
+    --btn2: #D84040;
+    --text: #EEEEEE;
+    --bg: #e6e6e6;
+    --white: #ffffff;
+    --second-text-color: #9c9c9c
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body{
+    min-height: 100vh;
+    width: 100%;
+}
+
+form{
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+}
+
+form .logo{
+    background-image: url(/frontend/static/images/chat.jpg);
+    flex: 1.4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+form .logo div{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text);
+}
+
+form .logo div a,
+form .form .auth a{
+    display: block;
+    text-decoration: none;
+    font-size: 1.2em;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 20px 0 0 20px;
+    margin: 2px 0;
+    color: var(--text);
+}
+
+form .logo h1{
+    font-size: 6em;
+    color: var(--text);
+    font-weight: 700;
+}
+
+form .form{
+    background-color: var(--text);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    gap: 10%;
+    padding: 20px;
+    min-height: 100%;
+}
+
+form .form .auth{
+    display: none;
+}
+
+form .form .forum{
+    text-align: center;
+    /* margin: 110px 0; */
+}
+
+form .form .forum h2{
+    font-size: 3.2em;
+    color: var(--background);
+    font-weight: 700;
+}
+
+form .form > div:not(.auth){
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+}
+
+form .form > div div{
+    position: relative;
+    margin: 5px 0 ;
+}
+
+form .form > div div i{
+    padding: 5px;
+    border-radius: 50%;
+    color: var(--background);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #D84040;
+
+}
+
+form .form > div div input{
+    outline: none;
+    padding: 5px 30px;
+    margin-top: 5px;
+    border: none;
+    width: 100%;
+    background-color: var(--text);
+    border-bottom: 2px solid var(--background);
+    transition: .6s;
+    font-size: 1.1em;
+}
+
+form .form > div div input:focus,
+form .form > div div input:valid{
+    border-bottom: 2px solid var(--btn1);
+}
+
+form .form .btn{
+    width: max-content;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: var(--btn2);
+    color: var(--text);
+    font-size: 1.05em;
+    font-weight: 600;
+    border-radius: 15px;
+    margin: 0 auto;
+    transition: .6s;
+    margin-top: 20px;
+}
+
+form .form .btn:hover{
+    background-color: var(--btn1);
+}
+
+@media (max-width:1180px) {
+    form .logo {
+        flex: 1;
+        font-size: 10px;
+    }
+
+    form .form {
+        flex: 1.2;
+    }
+
+}
+
+@media (max-width:978px) {
+    form .logo {
+        display: none;
+    }
+
+    form{
+        background-image: url(/frontend/static/images/chat.jpg);
+        padding: 70px;
+       
+    }
+
+    form .form {
+        border-radius: 20px;
+        /* height: 600px; */
+        position: relative;
+    }
+
+    form .form .auth{
+        display: flex;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: -60px;
+        gap: 20px;
+    }
+
+    form .form .auth a{
+        border-radius: 20px;
+    }
+}
+
+@media (max-width:421px) {
+    form{
+        padding: 70px 20px;
+        font-size: 12px;
+    }
+}

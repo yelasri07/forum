@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ 
+  <link rel="stylesheet" href="frontend/static/css/header.css" />
+  <link rel="stylesheet" href="frontend/static/css/addPost.css" />
+  <link rel="stylesheet" href="frontend/static/css/index.css" />
+  <link rel="shortcut icon" href="/frontend/static/images/icon.png" type="image/x-icon" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <title>home</title>
+</head>
+
+<body>
+  <!-- header -->
+  <header>
+    <nav class="container">
+      <a href="/" class="logo">FORUM</a>
+      <ul>
+        <li>
+          <a href="/"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+              <path
+                d="M7.5 11.2438V9.36876M5.6375 1.77501L2.26875 4.40001C1.70625 4.83751 1.25 5.76876 1.25 6.47501V11.1063C1.25 12.5563 2.43125 13.7438 3.88125 13.7438H11.1188C12.5688 13.7438 13.75 12.5563 13.75 11.1125V6.56251C13.75 5.80626 13.2438 4.83751 12.625 4.40626L8.7625 1.70001C7.8875 1.08751 6.48125 1.11876 5.6375 1.77501Z"
+                stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            home</a>
+        </li>
+        <li>
+          {{if .IsLogged}}
+          <form action="/logout" method="post">
+            <button type="submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M7.41668 6.30001C7.67501 3.30001 9.21668 2.07501 12.5917 2.07501H12.7C16.425 2.07501 17.9167 3.56668 17.9167 7.29168V12.725C17.9167 16.45 16.425 17.9417 12.7 17.9417H12.5917C9.24168 17.9417 7.70001 16.7333 7.42501 13.7833M12.5 10H3.01668M4.87501 7.20835L2.08334 10L4.87501 12.7917"
+                  stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Log Out
+            </button>
+          </form>
+          {{else}}
+          <a class="auth" href="/sign-in">Login</a>
+          <a class="auth" href="/sign-up">Register</a> {{end}}
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- posts -->
+    <article>
+      {{if .IsLogged}}
+      <div class="btn-add-post">
+        <button popovertarget="create-post">
+          Create post
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path
+              d="M7.5375 10.3125V7.1875M9.0625 8.75H5.9375M13.75 6.875V10.625C13.75 13.125 13.125 13.75 10.625 13.75H4.375C1.875 13.75 1.25 13.125 1.25 10.625V4.375C1.25 1.875 1.875 1.25 4.375 1.25H5.3125C6.25 1.25 6.45625 1.525 6.8125 2L7.75 3.25C7.9875 3.5625 8.125 3.75 8.75 3.75H10.625C13.125 3.75 13.75 4.375 13.75 6.875Z"
+              stroke="white" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+      <!-- Create Post -->
+      <div id="create-post" popover class="create-post">
+        <h4>Create post</h4>
+        <form action="/addPost" method="post" onsubmit="return validateForm()">
+          <div class="title">
+            <input placeholder="title" name="title" type="text" maxlength="50" required />
+          </div>
+          <div class="content">
+            <textarea maxlength="1000" placeholder="content" name="content" required></textarea>
+          </div>
+          <div class="categories">
+            {{range .Categories}}
+            <input name="category" value="{{.ID}}" style="display: none" type="checkbox" id="{{.ID}}" />
+            <label for="{{.ID}}">{{.NameCategory}}</label> {{end}}
+          </div>
+          <div class="btn">
+            <button type="submit">Create</button>
+          </div>
+        </form>
+      </div>
+      {{end}}
+
+      <!-- Show Posts -->
+      <div class="cards">
+        {{if .PostCat}} {{range .PostCat}}
+        <div class="card">
+          <div class="header-card">
+            <h4>
+              <img src="/frontend/static/images/profil.svg" alt="profil" />
+              {{.CreatedBy}}
+            </h4>
+            <p class="datetime">Created at: {{.Date}} ago</p>
+          </div>
+          <h3 class="title">{{.Title}}</h3>
+
+          <p class="content">{{.Content}}</p>
+
+          <div class="footer-card">
+            <div class="category">
+              <p><span>Category:</span> #{{.Categories}}</p>
+            </div>
+            <div class="reacts">
+              <div>
+                <span>{{.Like}}</span>
+                <form action="/addlike" method="post">
+                  <input style="display: none" checked value="{{.ID}}" name="postID" type="text" />
+                  <input style="display: none" checked value="like" name="status" type="text" />
+                  <button type="submit">
+                    {{if .UserLiked}}
+                    <i class="fa-solid fa-thumbs-up likecolor"></i>
+                    {{else}}
+                    <i class="fa-regular fa-thumbs-up"></i>
+                    {{end}}
+                  </button>
+                </form>
+              </div>
+              <div>
+                <span>{{.Dislike}}</span>
+                <form action="/addlike" method="post">
+                  <input style="display: none" checked value="{{.ID}}" name="postID" type="text" />
+                  <input style="display: none" checked value="dislike" name="status" type="text" />
+                  <button type="submit">
+                    {{if .UserDisliked}}
+                    <i class="fa-solid fa-thumbs-down dislikecolor"></i>
+                    {{else}}
+                    <i class="fa-regular fa-thumbs-down"></i>
+                    {{end}}
+                  </button>
+                </form>
+              </div>
+              <div>
+                <span>{{.NemberOfComment}}</span>
+                <button popovertarget="comments-{{.ID}}">
+                  <i class="fa-regular fa-comment"></i>
+                </button>
+
+                <div id="comments-{{.ID}}" popover class="comments">
+                  <div class="all-comments">
+                    {{if .Comments}} {{range .Comments}}
+                    <div class="comment">
+                      <div class="header-comment">
+                        <h4>
+                          <img src="/frontend/static/images/profil.svg" alt="profil" />
+                          {{.CreatedBy}}
+                        </h4>
+                        <p class="datetime">Created at: {{.Date}} ago</p>
+                      </div>
+                      <p class="content">{{.Content}}</p>
+                      <div class="footer-comment">
+                        <div class="reacts">
+                          <div>
+                            <span>{{.Like}}</span>
+                            <form action="/addlikeComment" method="post">
+                              <input style="display: none" value="{{.ID}}" name="IDComment" type="text" />
+                              <input style="display: none" value="like" name="status" type="text" />
+                              <button type="submit">
+                                {{if .CUserLiked}}
+                                <i class="fa-solid fa-thumbs-up"></i>
+                                {{else}}
+                                <i class="fa-regular fa-thumbs-up"></i>
+                                {{end}}
+                              </button>
+                            </form>
+                          </div>
+
+                          <div>
+                            <span>{{.Dislike}}</span>
+                            <form action="/addlikeComment" method="post">
+                              <input style="display: none" value="{{.ID}}" name="IDComment" type="text" />
+                              <input style="display: none" value="dislike" name="status" type="text" />
+                              <button type="submit">
+                                {{if .CUserDisliked}}
+                                <i class="fa-solid fa-thumbs-down"></i>
+                                {{else}}
+                                <i class="fa-regular fa-thumbs-down"></i>
+                                {{end}}
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {{end}} {{else}}
+                    <h1 style="text-align: center">
+                      <svg width="184" height="152" viewBox="0 0 184 152" xmlns="http://www.w3.org/2000/svg">
+                        <title>No data</title>
+                        <g fill="none" fill-rule="evenodd">
+                          <g transform="translate(24 31.67)">
+                            <ellipse fill-opacity=".8" fill="#F5F5F7" cx="67.797" cy="106.89" rx="67.797" ry="12.668">
+                            </ellipse>
+                            <path
+                              d="M122.034 69.674L98.109 40.229c-1.148-1.386-2.826-2.225-4.593-2.225h-51.44c-1.766 0-3.444.839-4.592 2.225L13.56 69.674v15.383h108.475V69.674z"
+                              fill="#AEB8C2"></path>
+                            <path
+                              d="M101.537 86.214L80.63 61.102c-1.001-1.207-2.507-1.867-4.048-1.867H31.724c-1.54 0-3.047.66-4.048 1.867L6.769 86.214v13.792h94.768V86.214z"
+                              fill="url(#linearGradient-1)" transform="translate(13.56)"></path>
+                            <path
+                              d="M33.83 0h67.933a4 4 0 0 1 4 4v93.344a4 4 0 0 1-4 4H33.83a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z"
+                              fill="#F5F5F7"></path>
+                            <path
+                              d="M42.678 9.953h50.237a2 2 0 0 1 2 2V36.91a2 2 0 0 1-2 2H42.678a2 2 0 0 1-2-2V11.953a2 2 0 0 1 2-2zM42.94 49.767h49.713a2.262 2.262 0 1 1 0 4.524H42.94a2.262 2.262 0 0 1 0-4.524zM42.94 61.53h49.713a2.262 2.262 0 1 1 0 4.525H42.94a2.262 2.262 0 0 1 0-4.525zM121.813 105.032c-.775 3.071-3.497 5.36-6.735 5.36H20.515c-3.238 0-5.96-2.29-6.734-5.36a7.309 7.309 0 0 1-.222-1.79V69.675h26.318c2.907 0 5.25 2.448 5.25 5.42v.04c0 2.971 2.37 5.37 5.277 5.37h34.785c2.907 0 5.277-2.421 5.277-5.393V75.1c0-2.972 2.343-5.426 5.25-5.426h26.318v33.569c0 .617-.077 1.216-.221 1.789z"
+                              fill="#DCE0E6"></path>
+                          </g>
+                          <path
+                            d="M149.121 33.292l-6.83 2.65a1 1 0 0 1-1.317-1.23l1.937-6.207c-2.589-2.944-4.109-6.534-4.109-10.408C138.802 8.102 148.92 0 161.402 0 173.881 0 184 8.102 184 18.097c0 9.995-10.118 18.097-22.599 18.097-4.528 0-8.744-1.066-12.28-2.902z"
+                            fill="#DCE0E6"></path>
+                          <g transform="translate(149.65 15.383)" fill="#FFF">
+                            <ellipse cx="20.654" cy="3.167" rx="2.849" ry="2.815"></ellipse>
+                            <path d="M5.698 5.63H0L2.898.704zM9.259.704h4.985V5.63H9.259z"></path>
+                          </g>
+                        </g>
+                      </svg>
+                    </h1>
+                    {{end}}
+                  </div>
+
+                  <div class="send-comment">
+                    <form action="/addComment" method="post">
+                      <input type="text" style="display: none" name="postID" value="{{.ID}}" />
+                      <textarea placeholder="type a comment..." name="comment"></textarea>
+                      <button type="submit">
+                        <i class="fa-solid fa-paper-plane"></i>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{end}} {{else}}
+        <h1 style="text-align: center">
+          <svg width="184" height="152" viewBox="0 0 184 152" xmlns="http://www.w3.org/2000/svg">
+            <title>No data</title>
+            <g fill="none" fill-rule="evenodd">
+              <g transform="translate(24 31.67)">
+                <ellipse fill-opacity=".8" fill="#F5F5F7" cx="67.797" cy="106.89" rx="67.797" ry="12.668"></ellipse>
+                <path
+                  d="M122.034 69.674L98.109 40.229c-1.148-1.386-2.826-2.225-4.593-2.225h-51.44c-1.766 0-3.444.839-4.592 2.225L13.56 69.674v15.383h108.475V69.674z"
+                  fill="#AEB8C2"></path>
+                <path
+                  d="M101.537 86.214L80.63 61.102c-1.001-1.207-2.507-1.867-4.048-1.867H31.724c-1.54 0-3.047.66-4.048 1.867L6.769 86.214v13.792h94.768V86.214z"
+                  fill="url(#linearGradient-1)" transform="translate(13.56)"></path>
+                <path d="M33.83 0h67.933a4 4 0 0 1 4 4v93.344a4 4 0 0 1-4 4H33.83a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z"
+                  fill="#F5F5F7"></path>
+                <path
+                  d="M42.678 9.953h50.237a2 2 0 0 1 2 2V36.91a2 2 0 0 1-2 2H42.678a2 2 0 0 1-2-2V11.953a2 2 0 0 1 2-2zM42.94 49.767h49.713a2.262 2.262 0 1 1 0 4.524H42.94a2.262 2.262 0 0 1 0-4.524zM42.94 61.53h49.713a2.262 2.262 0 1 1 0 4.525H42.94a2.262 2.262 0 0 1 0-4.525zM121.813 105.032c-.775 3.071-3.497 5.36-6.735 5.36H20.515c-3.238 0-5.96-2.29-6.734-5.36a7.309 7.309 0 0 1-.222-1.79V69.675h26.318c2.907 0 5.25 2.448 5.25 5.42v.04c0 2.971 2.37 5.37 5.277 5.37h34.785c2.907 0 5.277-2.421 5.277-5.393V75.1c0-2.972 2.343-5.426 5.25-5.426h26.318v33.569c0 .617-.077 1.216-.221 1.789z"
+                  fill="#DCE0E6"></path>
+              </g>
+              <path
+                d="M149.121 33.292l-6.83 2.65a1 1 0 0 1-1.317-1.23l1.937-6.207c-2.589-2.944-4.109-6.534-4.109-10.408C138.802 8.102 148.92 0 161.402 0 173.881 0 184 8.102 184 18.097c0 9.995-10.118 18.097-22.599 18.097-4.528 0-8.744-1.066-12.28-2.902z"
+                fill="#DCE0E6"></path>
+              <g transform="translate(149.65 15.383)" fill="#FFF">
+                <ellipse cx="20.654" cy="3.167" rx="2.849" ry="2.815"></ellipse>
+                <path d="M5.698 5.63H0L2.898.704zM9.259.704h4.985V5.63H9.259z"></path>
+              </g>
+            </g>
+          </svg>
+        </h1>
+        {{end}}
+      </div>
+    </article>
+
+    <!-- side bar -->
+    <aside>
+      {{if .IsLogged}}
+      <div class="profil">
+        <h4>
+          <img src="/frontend/static/images/profil.svg" /> {{.UserName}}
+          <span></span>
+        </h4>
+        <div>
+          <a href="/filterByUser?userName={{.UserName}}"><i class="fa-regular fa-user"></i> My posts</a>
+          <p><i class="fa-solid fa-heart"></i> Liked posts {{.TotalLikes}}</p>
+        </div>
+      </div>
+      {{end}}
+
+      <div class="filter-category">
+        <h4><i class="fa-solid fa-filter"></i> Filter By:</h4>
+        <div class="categories">
+          <form action="/filter" method="get">
+            <div>
+              {{range .Categories}}
+              <input name="category" style="display: none" value="{{.ID}}" type="checkbox"
+                id="categoryFilter-{{.ID}}" />
+              <label for="categoryFilter-{{.ID}}"><i class="fa-solid fa-tag"></i> {{.NameCategory}}</label>
+              {{end}}
+            </div>
+            <button>
+              Fitler
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M10.8225 4.4475L15.375 9L10.8225 13.5525M2.625 9H15.2475" stroke="white" stroke-width="1.5"
+                  stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </aside>
+  </main>
+  <script>
+    function validateForm() {
+      // Get all category checkboxes
+      const checkboxes = document.querySelectorAll('input[name="category"]');
+
+      const isChecked = Array.from(checkboxes).some(
+        (checkbox) => checkbox.checked
+      );
+
+      if (!isChecked) {
+        alert("Please select at least one category.");
+        return false;
+      }
+      return true;
+    }
+  </script>
+</body>
+
+</html>
