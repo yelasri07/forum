@@ -35,7 +35,12 @@ func AddLikePost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	if !models.CheckIdPost(db, postID, "Posts") {
+	boolen, err := models.CheckIdPost(db, postID, "Posts")
+	if err != nil {
+		handlers.RenderError(w, http.StatusInternalServerError)
+		return
+	}
+	if !boolen {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}

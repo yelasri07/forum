@@ -36,9 +36,17 @@ func GetPostByID(db *sql.DB, postID, UserId int) (*PostCat, error) {
 		if err != nil {
 			return nil, err
 		}
-		post.Like = CountNbOfLikes(post.ID, db)
-		post.Dislike = CountNbOfDislikes(post.ID, db)
 
+		post.Like , err  = CountNbOfLikes(post.ID, db)
+		if err != nil {
+			return nil , err
+		}
+
+		post.Dislike, err = CountNbOfDislikes(post.ID, db)
+		if err != nil {
+			return nil , err
+		}
+		
 		comment, err := SelectTheComment(post.ID, UserId, db)
 		if err != nil {
 			return nil, err
@@ -78,11 +86,13 @@ func GetPostIDsByCategory(db *sql.DB, ids *[]int, category string) error {
 		return err
 	}
 	defer rows.Close()
+
 	for rows.Next() {
 		id := 0
 		if err := rows.Scan(&id); err != nil {
 			return err
 		}
+		
 		if !slices.Contains(*ids, id) {
 			*ids = append(*ids, id)
 		}

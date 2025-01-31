@@ -48,8 +48,14 @@ func GetAllPostCatByUser(db *sql.DB, userID int) ([]*PostCat, error) {
 
 		post.Date = utils.DateFromat(post.DateCreation)
 
-		post.Like = CountNbOfLikes(post.ID, db)
-		post.Dislike = CountNbOfDislikes(post.ID, db)
+		post.Like , err  = CountNbOfLikes(post.ID, db)
+		if err != nil {
+			return nil , err
+		}
+		post.Dislike, err  = CountNbOfDislikes(post.ID, db)
+		if err != nil {
+			return nil , err
+		}
 		comment, err := SelectTheComment(post.ID, userID, db)
 		if err != nil {
 			return nil, err

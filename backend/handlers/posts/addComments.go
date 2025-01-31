@@ -36,8 +36,14 @@ func AddComments(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
+	
+	boolen , err := models.CheckIdPost(db, postID, "Posts")
+	if err != nil {
+		handlers.RenderError(w, http.StatusInternalServerError)
+		return
+	}
 
-	if !models.CheckIdPost(db, postID, "Posts") {
+	if !boolen {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}

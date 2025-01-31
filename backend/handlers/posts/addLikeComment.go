@@ -31,7 +31,13 @@ func AddlikeComment(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	status := r.FormValue("status")
 
-	if !models.CheckIdPost(db, NewIdComment, "Comment") {
+	boolen, err := models.CheckIdPost(db, NewIdComment, "Comment")
+	if err != nil {
+		handlers.RenderError(w, http.StatusInternalServerError)
+		return
+	}
+
+	if !boolen {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}

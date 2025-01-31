@@ -13,7 +13,7 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusMethodNotAllowed)
 		return
 	}
-
+	referer := r.Referer()
 	err := r.ParseForm()
 	if err != nil {
 		handlers.RenderError(w, http.StatusBadRequest)
@@ -43,5 +43,5 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			return
 		}
 	}
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(w, r, referer, http.StatusFound)
 }

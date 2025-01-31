@@ -19,13 +19,6 @@ func FilterByUser(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	requestedUserName := r.FormValue("userName")
-	
-	if requestedUserName == "" || requestedUserName != Homepage.UserName {
-		handlers.RenderError(w, http.StatusForbidden)
-		return
-	}
-
 	Homepage.PostCat, err = models.GetAllPostCatByUser(db, ID)
 
 	if err != nil {

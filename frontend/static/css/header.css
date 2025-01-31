@@ -34,9 +34,14 @@ header nav .logo {
 
 header nav ul {
     display: flex;
-    gap: 20px;
     align-items: center;
     list-style: none;
+    gap: 17px;
+}
+
+header nav ul>li{
+    display: flex;
+    gap: 17px;
 }
 
 header nav ul>li>a {
@@ -85,7 +90,6 @@ header nav ul>li .auth {
     outline: none;
     border-radius: 10px;
     color: var(--white);
-    margin-left: 15px;
     font-weight: 500;
     cursor: pointer;
     transition: .4s;

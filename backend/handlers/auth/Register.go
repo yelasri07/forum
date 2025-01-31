@@ -8,6 +8,7 @@ import (
 	"forum/backend/handlers"
 	"forum/backend/models"
 	"forum/middleware"
+	"forum/utils"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -39,11 +40,6 @@ func Register(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	// here we need to check password using regex
-
-	password, _ := bcrypt.GenerateFromPassword([]byte(r.FormValue("Password")), 10)
-	Password := string(password)
-
 	isUniqueUserName, err := models.UserExists(db, UserName, " UserName ")
 	if err != nil {
 		handlers.RenderError(w, http.StatusServiceUnavailable)
@@ -56,9 +52,11 @@ func Register(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	if !Verify(w, isUniqueUserName, isUniqueEmail) {
+	if !Verify(w, isUniqueUserName, isUniqueEmail, Email, r.FormValue("Password")) {
 		return
 	}
+	password, _ := bcrypt.GenerateFromPassword([]byte(r.FormValue("Password")), 10)
+	Password := string(password)
 
 	result, _ := db.Exec("INSERT INTO Users VALUES (?, ?, ?,?,?,?,?)", nil, UserName, Email, Password, time.Now().Format(time.DateTime), "", nil)
 
@@ -76,25 +74,24 @@ func Register(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func Verify(w http.ResponseWriter, isUniqueUserName, isUniqueEmail bool) bool {
-	if !isUniqueUserName && !isUniqueEmail {
-		e := &models.ErrorRegister{ErrName: "Username Already taken please chose Another", ErrEmail: "Email Already taken please chose Another"}
-		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
-		return false
-	}
-
+func Verify(w http.ResponseWriter, isUniqueUserName, isUniqueEmail bool, Email, Password string) bool {
+	e := &models.ErrorRegister{}
 	if !isUniqueUserName {
-		e := &models.ErrorRegister{ErrName: "Username Already taken please chose Another"}
-		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
-		return false
+		e.ErrName = "Username Already taken please chose Another"
 	}
-
 	if !isUniqueEmail {
-		e := &models.ErrorRegister{ErrEmail: "Email Already taken please chose Another"}
+		e.ErrEmail = "Email Already taken please chose Another"
+	}
+	if !utils.IsValidEmail(Email) {
+		e.ErrEmail = "Email must be in the format: example@example.example"
+	}
+	if len(Password) < 8 || len(Password) > 20 {
+		e.ErrPassword = "Password must be greater than 8 characters and less than 20 characters"
+	}
+	if e.ErrEmail != "" || e.ErrName != "" || e.ErrPassword != "" {
 		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
 		return false
 	}
-
 	return true
 }
 

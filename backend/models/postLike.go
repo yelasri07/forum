@@ -15,24 +15,28 @@ func GetTotalLikesByUser(db *sql.DB, userID int) (int, error) {
 	return countLikes, nil
 }
 
-func CountNbOfLikes(idPost int, db *sql.DB) int {
+func CountNbOfLikes(idPost int, db *sql.DB) (int , error) {
     query := `
         SELECT count(ID) FROM Post_Like
         WHERE ID_Post = ? AND status = ?
     `
     var a int
-    db.QueryRow(query, idPost, "like").Scan(&a)
-
-    return a
+    err := db.QueryRow(query, idPost, "like").Scan(&a)
+    if err != nil {
+        return -1 , err
+    }
+    return a , nil
 }
 
-func CountNbOfDislikes(idPost int, db *sql.DB) int {
+func CountNbOfDislikes(idPost int, db *sql.DB) (int , error) {
     query := `
         SELECT count(ID) FROM Post_Like
         WHERE ID_Post = ? AND status = ?
     `
     var count int
-    db.QueryRow(query, idPost, "dislike").Scan(&count)
-
-    return count
+    err := db.QueryRow(query, idPost, "dislike").Scan(&count)
+    if err != nil {
+        return -1 , nil
+    }
+    return count , nil
 }

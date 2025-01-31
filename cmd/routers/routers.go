@@ -54,7 +54,7 @@ func Router(db *sql.DB) {
 			posts.AddlikeComment(w, r, db)
 		}), db))
 
-	http.HandleFunc("/filterByUser", middleware.Authorization(
+	http.HandleFunc("/myPost", middleware.Authorization(
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			posts.FilterByUser(w, r, db)
 		}), db))

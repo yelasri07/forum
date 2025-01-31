@@ -7,6 +7,7 @@ import (
 	"forum/backend/handlers"
 	"forum/backend/models"
 	"forum/middleware"
+	"forum/utils"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -31,12 +32,12 @@ func Login(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
 	}
-	if ID == -1 {	
-		e := models.ErrorRegister{ErrEmail: "Incorrect email"}
+	if ID == -1 || !utils.IsValidEmail(Email) {
+		e := models.ErrorRegister{ErrEmail: "Incorrect email or format error"}
 		handlers.RenderTemplate(w, "login.html", e, http.StatusConflict)
 		return
 	}
-
+	
 	PasswordDatabase, err := models.VerifyPassword(db, ID)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)

@@ -161,7 +161,7 @@
                               <input style="display: none" value="like" name="status" type="text" />
                               <button type="submit">
                                 {{if .CUserLiked}}
-                                <i class="fa-solid fa-thumbs-up"></i>
+                                <i class="fa-solid fa-thumbs-up likecolor"></i>
                                 {{else}}
                                 <i class="fa-regular fa-thumbs-up"></i>
                                 {{end}}
@@ -176,7 +176,7 @@
                               <input style="display: none" value="dislike" name="status" type="text" />
                               <button type="submit">
                                 {{if .CUserDisliked}}
-                                <i class="fa-solid fa-thumbs-down"></i>
+                                <i class="fa-solid fa-thumbs-down dislikecolor"></i>
                                 {{else}}
                                 <i class="fa-regular fa-thumbs-down"></i>
                                 {{end}}
@@ -276,7 +276,7 @@
           <span></span>
         </h4>
         <div>
-          <a href="/filterByUser?userName={{.UserName}}"><i class="fa-regular fa-user"></i> My posts</a>
+          <a href="/myPost"><i class="fa-regular fa-user"></i> My posts</a>
           <p><i class="fa-solid fa-heart"></i> Liked posts {{.TotalLikes}}</p>
         </div>
       </div>

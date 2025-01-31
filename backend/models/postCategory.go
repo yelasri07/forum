@@ -8,6 +8,7 @@ import (
 
 func GetAllCategories(db *sql.DB) ([]*Category, error) {
 	query := "SELECT ID, Name_Category FROM Category"
+
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
@@ -17,10 +18,12 @@ func GetAllCategories(db *sql.DB) ([]*Category, error) {
 	var categories []*Category
 	for rows.Next() {
 		var category Category
+
 		err := rows.Scan(&category.ID, &category.NameCategory)
 		if err != nil {
 			return nil, err
 		}
+
 		categories = append(categories, &category)
 	}
 	return categories, nil
@@ -57,10 +60,17 @@ func GetAllPostCat(db *sql.DB, UserId int) ([]*PostCat, error) {
 			return nil, err
 		}
 
-		post.Like = CountNbOfLikes(post.ID, db)
-		post.Dislike = CountNbOfDislikes(post.ID, db)
+		post.Like, err = CountNbOfLikes(post.ID, db)
+		if err != nil {
+			return nil, err
+		}
 
-		comment, err := SelectTheComment(post.ID, UserId,db)
+		post.Dislike, err = CountNbOfDislikes(post.ID, db)
+		if err != nil {
+			return nil, err
+		}
+
+		comment, err := SelectTheComment(post.ID, UserId, db)
 		if err != nil {
 			return nil, err
 		}

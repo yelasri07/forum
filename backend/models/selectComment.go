@@ -28,10 +28,22 @@ func SelectTheComment(postID, userID int, db *sql.DB) ([]*Comment, error) {
 	for rows.Next() {
 		var eachComment Comment
 
-		rows.Scan(&eachComment.ID, &eachComment.Content, &eachComment.CreatedBy, &eachComment.DateCreation)
+		err := rows.Scan(&eachComment.ID, &eachComment.Content, &eachComment.CreatedBy, &eachComment.DateCreation)
+		if err != nil {
+			return nil , err
+		}
+
 		eachComment.Date = utils.DateFromat(eachComment.DateCreation)
-		eachComment.Like = NbOfReactInComct(eachComment.ID, db, "like")
-		eachComment.Dislike = NbOfReactInComct(eachComment.ID, db, "dislike")
+		eachComment.Like , err = NbOfReactInComct(eachComment.ID, db, "like")
+		if err != nil {
+			return nil , err
+		}
+
+		eachComment.Dislike, err = NbOfReactInComct(eachComment.ID, db, "dislike")
+		if err != nil {
+			return nil , err
+		}
+
 		status := ""
 		if userID != -1 {
 			id, _ := strconv.Atoi(eachComment.ID)
@@ -39,6 +51,7 @@ func SelectTheComment(postID, userID int, db *sql.DB) ([]*Comment, error) {
 			if err != nil {
 				return nil, err
 			}
+			
 			if status == "like" {
 				eachComment.CUserLiked = true
 			} else if status == "dislike" {
