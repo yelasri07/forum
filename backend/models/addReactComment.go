@@ -12,22 +12,24 @@ func AddReactInTheComment(db *sql.DB, status string, userID int, NewIdComment in
 	var err error
 	err = db.QueryRow(Query, userID, NewIdComment).Scan(&statuss)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			_, err = db.Exec("INSERT INTO comment_like VALUES (?,?,?,?)", nil, status, userID, NewIdComment)
+			if err != nil {
+				return err
+			}
+			return nil
+		}
 		return err
 	}
 
-	if statuss == "" {
-		_ , err = db.Exec("INSERT INTO comment_like VALUES (?,?,?,?)", nil, status, userID, NewIdComment)
-		if err != nil {
-			return err
-		}
-	} else {
+	if statuss != "" {
 		if (statuss == "like" && status == "dislike") || (statuss == "dislike" && status == "like") {
-			_ , err = db.Exec("UPDATE comment_like SET status = ? WHERE ID_User = ? AND ID_comment = ?", status, userID, NewIdComment)
+			_, err = db.Exec("UPDATE comment_like SET status = ? WHERE ID_User = ? AND ID_comment = ?", status, userID, NewIdComment)
 			if err != nil {
 				return err
 			}
 		} else {
-			_ , err = db.Exec("DELETE FROM comment_like WHERE ID_User = ? AND ID_Comment = ?", userID, NewIdComment)
+			_, err = db.Exec("DELETE FROM comment_like WHERE ID_User = ? AND ID_Comment = ?", userID, NewIdComment)
 			if err != nil {
 				return err
 			}

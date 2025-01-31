@@ -2,6 +2,7 @@ package posts
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -37,6 +38,7 @@ func AddLikePost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	boolen, err := models.CheckIdPost(db, postID, "Posts")
 	if err != nil {
+		fmt.Println(err)
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
 	}
@@ -47,6 +49,7 @@ func AddLikePost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	err = models.AddReact(db, status, userID, postID)
 	if err != nil {
+		fmt.Println("=>",err)
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
 	}
