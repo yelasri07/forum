@@ -1,87 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sign-in</title>
+    <link rel="stylesheet" href="/frontend/static/css/auth.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="shortcut icon"
+      href="frontend/static/images/icon.png"
+      type="image/x-icon"
+    />
+    <style>
+      form .logo div a:last-child,
+      form .form .auth a:last-child {
+        background-color: var(--text);
+        color: var(--background);
+      }
+    </style>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sign-in</title>
-  <link rel="stylesheet" href="/frontend/static/css/auth.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="shortcut icon" href="frontend/static/images/icon.png" type="image/x-icon">
-  <style>
-    form .logo div a:last-child,
-    form .form .auth a:last-child {
-      background-color: var(--text);
-      color: var(--background);
-    }
-  </style>
-</head>
-
-<body>
-
-  <form action="/register" method="post">
-    <div class="logo">
-      <h1>Forum</h1>
-      <div>
-        <a href="/sign-in">LOGIN</a>
-        <a href="/sign-up">REGISTER</a>
-      </div>
-    </div>
-
-    <div class="form">
-
-      <div class="auth">
-        <a href="/sign-in">LOGIN</a>
-        <a href="/sign-up" class="register">REGISTER</a>
-      </div>
-
-      <div class="forum">
-        <h2>Forum</h2>
-      </div>
-
-      <div>
-
+  <body>
+    <form action="/register" method="post">
+      <div class="logo">
+        <h1>Forum</h1>
         <div>
-          <div>
-            <i class="fa-solid fa-user"></i>
-            <input type="text" name="UserName" required maxlength="30" placeholder="username" />
-          </div>
-          {{if .ErrName}}
-          <br>
-          <span style="color: red">{{.ErrName}}</span>
-          {{end}}
+          <a href="/sign-in">LOGIN</a>
+          <a href="/sign-up">REGISTER</a>
+        </div>
+      </div>
+
+      <div class="form">
+        <div class="auth">
+          <a href="/sign-in">LOGIN</a>
+          <a href="/sign-up">REGISTER</a>
+        </div>
+
+        <div class="forum">
+          <h2>Forum</h2>
         </div>
 
         <div>
           <div>
-            <i class="fa-solid fa-envelope"></i>
-            <input placeholder="Email" type="email" name="Email" required maxlength="70" />
+            <div>
+              <i class="fa-solid fa-user"></i>
+              <input
+                type="text"
+                name="UserName"
+                required
+                maxlength="30"
+                placeholder="username"
+              />
+            </div>
+            {{if .ErrName}}
+            <br />
+            <span style="color: red">{{.ErrName}}</span>
+            {{end}}
           </div>
-          {{if .ErrEmail}}
-          <br>
-          <span style="color: red">{{.ErrEmail}}</span>
-          {{end}}
-        </div>
-  
-        <div>
+
           <div>
-            <i class="fa-solid fa-lock"></i>
-            <input placeholder="Password" type="Password" name="Password" required maxlength="70" />
+            <div>
+              <i class="fa-solid fa-envelope"></i>
+              <input
+                placeholder="Email"
+                type="email"
+                name="Email"
+                required
+                maxlength="70"
+              />
+            </div>
+            {{if .ErrEmail}}
+            <br />
+            <span style="color: red">{{.ErrEmail}}</span>
+            {{end}}
           </div>
-          {{if .ErrPassword}}
-          <br>
-          <span style="color: red">{{.ErrPassword}}</span>
-          {{end}}
+
+          <div>
+            <div>
+              <i class="fa-solid fa-lock"></i>
+              <input
+                placeholder="Password"
+                type="Password"
+                name="Password"
+                required
+                maxlength="70"
+              />
+            </div>
+            {{if .ErrPassword}}
+            <br />
+            <span style="color: red">{{.ErrPassword}}</span>
+            {{end}}
+          </div>
+
+          <button class="btn" type="submit">sign-in</button>
         </div>
-  
-        <button class="btn" type="submit">sign-in</button>
+        <div class="auth-externe">
+          <a
+            href="https://github.com/login/oauth/authorize?client_id=Ov23liJqHHscEvIqlYIx&scope=user"
+          >
+            Github
+          </a>
+        </div>
       </div>
-    </div>
-
-  </form>
-
-</body>
-
+    </form>
+  </body>
 </html>

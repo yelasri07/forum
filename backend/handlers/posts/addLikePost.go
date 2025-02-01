@@ -49,10 +49,10 @@ func AddLikePost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	err = models.AddReact(db, status, userID, postID)
 	if err != nil {
-		fmt.Println("=>",err)
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
 	}
 
 	http.Redirect(w, r, refer, http.StatusFound)
+
 }

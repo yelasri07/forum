@@ -31,6 +31,10 @@ func Router(db *sql.DB) {
 		auth.RegisterPage(w, r, db)
 	})
 
+	http.HandleFunc("/callbackUrl", func(w http.ResponseWriter, r *http.Request) {
+		auth.CallbackGithub(w,r,db)
+	})
+
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		auth.Logout(w, r, db)
 	})

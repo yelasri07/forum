@@ -45,7 +45,7 @@ func Register(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusServiceUnavailable)
 		return
 	}
-
+	
 	isUniqueEmail, err := models.UserExists(db, Email, " Email ")
 	if err != nil {
 		handlers.RenderError(w, http.StatusServiceUnavailable)
