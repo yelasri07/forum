@@ -44,6 +44,9 @@
 
         <div class="forum">
           <h2>Forum</h2>
+          {{if .AlreadyLogedWithGithub}}
+          <p style="color: red;"> {{.AlreadyLogedWithGithub}}</p>
+          {{end}}
         </div>
 
         <div>
@@ -102,7 +105,7 @@
         </div>
         <div class="auth-externe">
           <a
-            href="https://github.com/login/oauth/authorize?client_id=Ov23liJqHHscEvIqlYIx&scope=user"
+          href="https://github.com/login/oauth/authorize?client_id=Ov23liJqHHscEvIqlYIx&redirect_uri=http://localhost:8080/callbackUrlRegister&scope=user"
           >
             Github
           </a>

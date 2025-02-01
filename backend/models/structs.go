@@ -3,9 +3,10 @@ package models
 import "time"
 
 type ErrorRegister struct {
-	ErrName     string
-	ErrEmail    string
-	ErrPassword string
+	ErrName                string
+	ErrEmail               string
+	ErrPassword            string
+	AlreadyLogedWithGithub string
 }
 
 type HomePage struct {

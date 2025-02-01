@@ -37,7 +37,7 @@ type GitHubEmail struct {
 	Visibility string `json:"visibility"`
 }
 
-func CallbackGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func CallbackGithubRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	code := r.URL.Query().Get("code")
 	if code == "" {
 		handlers.RenderError(w, http.StatusBadRequest)
@@ -74,7 +74,8 @@ func CallbackGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusServiceUnavailable)
 	}
 	if !isUniqueEmail || !isUniqueUserName {
-		handlers.RenderError(w, http.StatusBadRequest)
+		e := &models.ErrorRegister{AlreadyLogedWithGithub: "You have an account try to Login."}
+		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
 		return
 	}
 	result, _ := db.Exec("INSERT INTO Users VALUES (?, ?, ?,?,?,?,?)", nil, user.Login, user.Email, "", time.Now().Format(time.DateTime), "", nil)
