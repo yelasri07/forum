@@ -43,7 +43,7 @@ func GoogleRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 	if user == nil {
-		http.Redirect(w, r, "/sign-up" , http.StatusSeeOther)
+		http.Redirect(w, r, "/sign-up", http.StatusSeeOther)
 		return
 	}
 	isUniqueEmail, err := models.UserExists(db, user.Email, " Email ")
