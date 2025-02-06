@@ -1,4 +1,4 @@
-package auth
+package github
 
 import (
 	"bytes"
@@ -17,10 +17,6 @@ const (
 	clientID     = "Ov23liJqHHscEvIqlYIx"
 	clientSecret = "fdc95f256c061f03380b98b1911b94656c0a00a6"
 )
-
-type AccessTokenResponse struct {
-	AccessToken string `json:"access_token"`
-}
 
 type GitHubUser struct {
 	Login     string `json:"login"`
@@ -102,7 +98,7 @@ func getAccessToken(code string) (string, error) {
 		bytes.NewBuffer([]byte(data)),
 	)
 	if err != nil {
-		return "", fmt.Errorf("creating request: %w", err)
+		return "", err
 	}
 
 	req.Header.Set("Accept", "application/json")
@@ -110,22 +106,22 @@ func getAccessToken(code string) (string, error) {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("sending request: %w", err)
+		return "", err
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", fmt.Errorf("reading response: %w", err)
+		return "", err
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("unexpected status: %d, body: %s", resp.StatusCode, string(body))
+		return "", err
 	}
 
-	var tokenResp AccessTokenResponse
+	var tokenResp models.AccessTokenResponse
 	if err := json.Unmarshal(body, &tokenResp); err != nil {
-		return "", fmt.Errorf("parsing response: %w", err)
+		return "", err
 	}
 
 	if tokenResp.AccessToken == "" {

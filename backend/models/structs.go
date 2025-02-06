@@ -2,6 +2,10 @@ package models
 
 import "time"
 
+type AccessTokenResponse struct {
+	AccessToken string `json:"access_token"`
+}
+
 type ErrorRegister struct {
 	ErrName                string
 	ErrEmail               string

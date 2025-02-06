@@ -6,6 +6,8 @@ import (
 
 	"forum/backend/handlers"
 	"forum/backend/handlers/auth"
+	"forum/backend/handlers/auth/github"
+	"forum/backend/handlers/auth/google"
 	"forum/backend/handlers/posts"
 	"forum/middleware"
 )
@@ -30,12 +32,16 @@ func Router(db *sql.DB) {
 	http.HandleFunc("/sign-up", func(w http.ResponseWriter, r *http.Request) {
 		auth.RegisterPage(w, r, db)
 	})
-
+	// GithubAuth
 	http.HandleFunc("/callbackUrlRegister", func(w http.ResponseWriter, r *http.Request) {
-		auth.CallbackGithubRegister(w,r,db)
+		github.CallbackGithubRegister(w, r, db)
 	})
 	http.HandleFunc("/callbackUrlLogin", func(w http.ResponseWriter, r *http.Request) {
-		auth.CallbackGithubLogin(w,r,db)
+		github.CallbackGithubLogin(w, r, db)
+	})
+	// GoogleAuth
+	http.HandleFunc("/callbackRegisterGoogle", func(w http.ResponseWriter, r *http.Request) {
+		google.GoogleRegister(w, r, db)
 	})
 
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
