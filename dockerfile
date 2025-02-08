@@ -1,9 +1,12 @@
 FROM golang:1.22.5-alpine
 
+RUN apk add --no-cache gcc musl-dev sqlite-dev
+
 WORKDIR /app
 
 COPY . .
 
+ENV CGO_ENABLED=1
 RUN go mod tidy
 
 RUN go build -o main ./cmd

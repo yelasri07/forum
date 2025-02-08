@@ -31,7 +31,6 @@ func GoogleRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
-
 	accessToken, err := getAccesstoken(code)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
@@ -46,6 +45,7 @@ func GoogleRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		http.Redirect(w, r, "/sign-up", http.StatusSeeOther)
 		return
 	}
+
 	isUniqueEmail, err := models.UserExists(db, user.Email, " Email ")
 	if err != nil {
 		handlers.RenderError(w, http.StatusServiceUnavailable)
