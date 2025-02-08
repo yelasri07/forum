@@ -1,0 +1,603 @@
+     :root {
+        --background: #2c2f33;
+        --btn1: #8E1616;
+        --btn2: #D84040;
+        --text: #EEEEEE;
+        --bg: #e6e6e6;
+        --white: #ffffff;
+        --second-text-color: #9c9c9c
+    }
+    
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: sans-serif;
+        
+    }
+    
+    body {
+        min-height: 100vh;
+        width: 100%;
+        margin: auto;
+        background-color: var(--bg);    
+        overflow: auto;
+    }
+    
+    .container {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+        transition: .6s;
+    }
+    
+    img[src="/frontend/static/images/profil.svg"] {
+        width: 35px;
+        padding: 5px;
+        background-color: var(--bg);
+        border-radius: 50%;
+    }
+    
+    main {
+        display: flex;
+        height: 85vh;
+        margin-top: 20px;
+        gap: 60px;
+        overflow: hidden;
+    }
+    
+    main article {
+        flex: 2.2;
+        height: 100%;
+    }
+    
+    main aside {
+        flex: 1;
+        overflow: auto;
+    }
+    
+    main article .create-post {
+        text-align: right;
+        margin-bottom: 20px;
+    }
+    
+    main article .cards {
+        height: 100%;
+        overflow: auto;
+        padding-bottom: 70px;
+    }
+    
+    main article .cards .card {
+        max-width: 95%;
+        background-color: var(--white);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 4px 12px;
+        word-break: break-all;
+    }
+    
+    main article .cards .card .header-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: solid 1px var(--bg);
+        padding-bottom: 8px;
+    }
+    
+    main article .cards .card .header-card h4 {
+        display: flex;
+        gap: 7px;
+        align-items: center;
+        font-weight: 500;
+    }
+    
+    main article .cards .card .header-card .datetime {
+        color: var(--second-text-color);
+        font-weight: 300;
+        font-size: 0.8em;
+    }
+    
+    main article .cards .card .title {
+        margin-top: 8px;
+        font-weight: 600;
+    }
+    
+    main article .cards .card .content {
+        margin: 10px 0;
+        line-height: 23px;
+    }
+    
+    main article .cards .card .footer-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        word-break: normal;
+    }
+
+    main article .cards .card .footer-card .category{
+        flex-wrap: wrap;
+    }
+    
+    main article .cards .card .footer-card .category p {
+        color: var(--btn2);
+    }
+    
+    main article .cards .card .footer-card .category p span {
+        color: var(--second-text-color);
+    }
+    
+    main article .cards .card .footer-card .reacts {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 110px;
+        justify-content: end;
+    }
+
+    main article .cards .card .footer-card .reacts form:not(form[action="/addComment"]){
+        display: inline;
+    }
+
+    main article .cards .card .footer-card .reacts button:not(form[action="/addComment"] button){
+        background: none;
+        border: none;
+        outline: none;
+    }
+    
+    main article .cards .card .footer-card .reacts div i {
+        cursor: pointer;
+        transition: .4s;
+    }
+    
+    main article .cards .card .footer-card .reacts div i:hover {
+        color: var(--btn2);
+    }
+    
+    main aside {
+        position: relative;
+    }
+    
+    main aside .profil {
+        background-color: var(--white);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 30px;
+    }
+    
+    main aside .profil h4 {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        border-bottom: 1px solid var(--bg);
+        padding-bottom: 8px;
+    }
+    
+    main aside .profil h4 span {
+        width: 10px;
+        height: 10px;
+        background-color: #00ff11;
+        border-radius: 50%;
+    }
+    
+    main aside .profil>div {
+        margin: 30px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+    
+    main aside .profil>div a {
+        cursor: pointer;
+    }
+    
+    main aside .profil>div a{
+        font-size: 1.15em;
+        color: #000;
+        text-decoration: none;
+    }
+    
+    main aside .profil>div a i[class="fa-solid fa-heart"] {
+        color: var(--btn2);
+    }
+    
+    main aside .profil>div a:hover {
+        text-decoration: underline;
+    }
+    
+    main aside .filter-category {
+        background-color: var(--white);
+        padding: 15px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, .1);
+    }
+    
+    main aside .filter-category>h4 {
+        font-size: 1.4em;
+    }
+    
+    main aside .filter-category .categories form > div {
+        padding: 0 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    main aside .filter-category .categories label {
+        cursor: pointer;
+        display: flex;
+        gap: 8px;
+    }
+    
+    main aside .filter-category .categories label:hover {
+        color: var(--btn2);
+    }
+    
+    main aside .filter-category .categories input:checked+label {
+        color: var(--btn2);
+    }
+    
+    main aside .filter-category button {
+        background-color: var(--btn2);
+        outline: none;
+        border: none;
+        border-radius: 10px;
+        display: flex;
+        width: 100%;
+        gap: 5px;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        padding: 7px 0;
+        font-size: 1.1em;
+        font-weight: 500;
+        cursor: pointer;
+        transition: .4s;
+        margin-top: 15px;
+    }
+    
+    main aside .filter-category button:hover {
+        background-color: var(--btn1);
+    }
+    
+     ::-webkit-scrollbar {
+        width: 5px;
+        margin-left: 50px;
+    }
+    
+     ::-webkit-scrollbar-track {
+        background: var(--text);
+    }
+    
+     ::-webkit-scrollbar-thumb {
+        background-color: var(--btn2);
+        border-radius: 10px;
+    }
+    
+     ::-webkit-scrollbar-thumb:hover {
+        background: var(--btn1);
+    }
+    
+    .dislikecolor {
+        color: red;
+    }
+    
+    .likecolor {
+        color: var(--btn2);
+    }
+
+    /* comments */
+
+    main article .comments{
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        box-shadow: 0 0 30px 15px rgba(0,0,0,.1);
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        padding-bottom: 10px;
+        width: 600px;
+        max-height: 650px;
+    }
+    
+    main article .all-comments{
+        max-height: 565px;
+        overflow: auto;
+        border-radius: 10px;
+    }
+
+    main article .comments .comment{
+        background-color: var(--bg);
+        border-radius: 10px;
+        padding: 10px;
+        margin: 10px 0;
+        word-break: break-all;
+    }
+
+    main article .comments .comment:first-child,
+    main article .comments .comment:last-child{
+        margin: 0 0;
+    }
+
+    main article .comments .comment:last-child{
+        margin-top: 10px;
+    }
+
+    main article .comments .comment .header-comment h4{
+        display: flex;
+        gap: 7px;
+        align-items: center;
+        font-weight: 500;
+    }
+
+    main article .comments .comment .header-comment p{
+        color: var(--second-text-color);
+        font-weight: 300;
+        font-size: 0.8em;
+        padding-left: 43px;
+        margin-top: -7px;
+    }
+
+    main article .comments .comment .content{
+        margin: 5px 0;
+        padding: 0 9px;
+    }
+
+    main article .comments .comment .footer-comment{
+        padding-left: 9px;
+    }
+
+    main article .comments .comment .footer-comment .reacts{
+        justify-content: start;
+    }
+
+    main article .comments .send-comment{
+        margin-top: 15px;
+    }
+
+    main article .comments .send-comment form{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    main article .comments .send-comment form textarea{
+        resize: none;
+        width: 80%;
+        padding: 7px 14px;
+        border-radius: 10px;
+        border: solid 1px var(--bg);
+        outline: none;
+        flex: 2;
+    }
+
+    main article .comments .send-comment form button{
+        background-color: var(--bg);
+        border-radius: 50%;
+        padding: 15px;
+        border: none;
+        outline: none;
+    }
+
+
+    /* Responsive container */
+    @media (min-width: 576px) {
+        .container {
+            width: 100%;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .container {
+            width: 100%;
+        }
+    }
+    
+    @media (min-width: 992px) {
+        .container {
+            width: 100%;
+        }
+    }
+    
+    @media (min-width: 1200px) {
+        .container {
+            width: 100%;
+        }
+    }
+    
+    @media (min-width: 1400px) {
+        .container {
+            max-width: 1320px;
+        }
+    }
+
+    /* Responsive main */
+    @media (max-width: 768px) {
+        header{
+            font-size: 12px;
+        }
+        main{
+            flex-direction: column;
+            overflow: visible;
+            min-height: 100vh;
+        }
+
+        main article .cards{
+            overflow: visible;
+            
+        }
+
+        main aside{
+            order: -1;
+            overflow: visible;
+            font-size: 14px;
+            margin-top: -15px;
+        }
+
+        main aside .profil {
+            padding: 8px;
+            margin-bottom: 7px;
+            flex: 1;
+            text-align: center;
+        }
+        
+        main aside .profil h4 {
+            padding-bottom: 6px;
+        }
+        
+        main aside .profil>div {
+            margin: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        main aside .profil>div a {
+            cursor: pointer;
+        }
+        
+        main aside .profil>div a,
+        main aside .profil>div p {
+            font-size: 1.15em;
+            color: #000;
+            text-decoration: none;
+        }
+        
+        main aside .profil>div p i[class="fa-solid fa-heart"] {
+            color: var(--btn2);
+        }
+        
+        main aside .profil>div a:hover {
+            text-decoration: underline;
+        }
+
+
+        main aside .filter-category {
+            background-color: var(--white);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, .1);
+            flex: 1.5;
+        }
+        
+        main aside .filter-category .categories form > div {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            padding: 0;
+            width: 70%;
+        }
+        
+        main aside .filter-category .categories label > i {
+            display: none;
+        }
+
+        
+
+        main article .btn-add-post{
+            text-align: right;
+            margin-bottom: 10px;
+            margin-top: -50px;
+        }
+        
+        main article .btn-add-post button{
+            padding: 8px 16px;
+            border: none;
+            outline: none;
+            border-radius: 10px;
+            background-color: var(--btn2);
+            color: var(--white);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 1.05em;
+            cursor: pointer;
+            transition: .4s;
+            margin-right: 0;
+        }
+
+        main article .cards .card{
+            max-width: 100%;
+        }
+
+
+        main article .create-post{
+            width: 80%;
+        }
+
+        main article .create-post .categories{
+            flex-wrap: wrap;
+        }
+
+        main article .comments{
+            width: 85%;
+        }
+    }
+
+    @media (max-width: 425px){
+        header{
+            font-size: 10px;
+        }
+
+        header nav ul{
+            gap: 4px;
+        }
+
+        header nav ul>li{
+            gap: 4px;
+        }
+
+        header nav ul>li>a {
+            padding: 5px 10px;
+        }
+
+        header nav ul>li form button{
+            padding: 4px 8px;
+        }
+
+        header nav ul>li .auth{
+            padding: 6px 12px;
+        }
+    }
+
+
+    /* responsive height */
+    @media (max-height: 774px) {
+        main article .comments {
+            max-height: 600px;
+        }
+    
+        main article .all-comments {
+            max-height: 515px;
+        }
+    }
+    
+    @media (max-height: 600px) {
+        main article .comments {
+            max-height: 500px;
+        }
+    
+        main article .all-comments {
+            max-height: 415px;
+        }
+    }
+    
+    @media (max-height: 480px) {
+        main article .comments {
+           max-height: 300px;
+        }
+    
+        main article .all-comments {
+            max-height: 215px;
+        }
+    }
