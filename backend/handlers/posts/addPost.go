@@ -2,7 +2,6 @@ package posts
 
 import (
 	"database/sql"
-	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -17,7 +16,7 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	r.ParseMultipartForm(20 << 20)
+	r.ParseMultipartForm(10 << 20)
 	referer := r.Referer()
 	err := r.ParseForm()
 	if err != nil {
@@ -37,8 +36,9 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	defer file.Close()
 
 	sizeInMB := float64(fileHeader.Size) / (1024 * 1024)
-	if sizeInMB > 0 {
-		fmt.Println(sizeInMB)
+	if sizeInMB > 20 {
+		handlers.RenderError(w, http.StatusBadRequest)
+		return
 	}
 
 	image, err := io.ReadAll(file)
