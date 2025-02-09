@@ -14,8 +14,6 @@ import (
 	"forum/backend/models"
 )
 
-
-
 type GoogleUser struct {
 	ID    string `json:"id"`
 	Email string `json:"email"`
@@ -29,7 +27,7 @@ func GoogleRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 	fmt.Println("=>", os.Getenv("name"))
-	accessToken, err := getAccesstoken(code)
+	accessToken, err := getAccesstoken(code, os.Getenv("redirect_uri_register"))
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
@@ -55,7 +53,10 @@ func GoogleRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusServiceUnavailable)
 		return
 	}
-	if !isUniqueEmail || !isUniqueUserName {
+	if !isUniqueUserName {
+		user.Name = "0" + user.Name
+	}
+	if !isUniqueEmail {
 		e := &models.ErrorRegister{AlreadyLogedWithGithub: "You have an account try to Login."}
 		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
 		return
@@ -79,8 +80,8 @@ func GoogleRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func getAccesstoken(code string) (string, error) {
-	data := fmt.Sprintf("client_id=%s&client_secret=%s&code=%s&redirect_uri=%s&grant_type=authorization_code", os.Getenv("ID_client"), os.Getenv("secret_client"), code, os.Getenv("redirect_uri"))
+func getAccesstoken(code, redirect_uri string) (string, error) {
+	data := fmt.Sprintf("client_id=%s&client_secret=%s&code=%s&redirect_uri=%s&grant_type=authorization_code", os.Getenv("ID_client"), os.Getenv("secret_client"), code, redirect_uri)
 
 	req, err := http.NewRequest("POST", "https://oauth2.googleapis.com/token", bytes.NewBuffer([]byte(data)))
 	if err != nil {

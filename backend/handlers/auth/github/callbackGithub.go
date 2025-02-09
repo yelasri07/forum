@@ -65,7 +65,10 @@ func CallbackGithubRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) 
 	if err != nil {
 		handlers.RenderError(w, http.StatusServiceUnavailable)
 	}
-	if !isUniqueEmail || !isUniqueUserName {
+	if !isUniqueUserName {
+		user.Name = "0" + user.Name
+	}
+	if !isUniqueEmail {
 		e := &models.ErrorRegister{AlreadyLogedWithGithub: "You have an account try to Login."}
 		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
 		return

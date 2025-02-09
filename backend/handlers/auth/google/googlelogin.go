@@ -1,39 +1,30 @@
-package github
+package google
 
 import (
 	"database/sql"
 	"net/http"
+	"os"
 
 	"forum/backend/handlers"
 	"forum/backend/models"
 	"forum/utils"
 )
 
-func CallbackGithubLogin(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func GoogleLogin(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	code := r.URL.Query().Get("code")
 	if code == "" {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
-
-	accessToken, err := getAccessToken(code)
+	accessToken, err := getAccesstoken(code,os.Getenv("redirect_uri_login"))
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
 	}
-	user, err := getGitHubUser(accessToken)
+	user, err := getGoogleUser(accessToken)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
-	}
-
-	if user.Email == "" {
-		email, err := getPrimaryEmail(accessToken)
-		if err != nil {
-			handlers.RenderError(w, http.StatusInternalServerError)
-			return
-		}
-		user.Email = email
 	}
 	ID, err := models.VerifyEmail(db, user.Email)
 	if err != nil {

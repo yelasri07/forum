@@ -43,6 +43,9 @@ func Router(db *sql.DB) {
 	http.HandleFunc("/callbackRegisterGoogle", func(w http.ResponseWriter, r *http.Request) {
 		google.GoogleRegister(w, r, db)
 	})
+	http.HandleFunc("/callbackLoginGoogle", func(w http.ResponseWriter, r *http.Request) {
+		google.GoogleLogin(w, r, db)
+	})
 
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		auth.Logout(w, r, db)
