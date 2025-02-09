@@ -7,15 +7,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"time"
 
 	"forum/backend/handlers"
 	"forum/backend/models"
-)
-
-const (
-	clientID     = "Ov23liJqHHscEvIqlYIx"
-	clientSecret = "fdc95f256c061f03380b98b1911b94656c0a00a6"
 )
 
 type GitHubUser struct {
@@ -91,7 +87,7 @@ func CallbackGithubRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) 
 }
 
 func getAccessToken(code string) (string, error) {
-	data := fmt.Sprintf("client_id=%s&client_secret=%s&code=%s", clientID, clientSecret, code)
+	data := fmt.Sprintf("client_id=%s&client_secret=%s&code=%s", os.Getenv("clientID"), os.Getenv("clientSecret"), code)
 	req, err := http.NewRequest(
 		"POST",
 		"https://github.com/login/oauth/access_token",

@@ -7,17 +7,14 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"time"
 
 	"forum/backend/handlers"
 	"forum/backend/models"
 )
 
-const (
-	ID_client     = "143686775395-8hvrk8e9bji1g6e2o2s7ogubeblhgrcp.apps.googleusercontent.com"
-	secret_client = "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"
-	redirect_uri  = "http://localhost:8080/callbackRegisterGoogle"
-)
+
 
 type GoogleUser struct {
 	ID    string `json:"id"`
@@ -31,6 +28,7 @@ func GoogleRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
+	fmt.Println("=>", os.Getenv("name"))
 	accessToken, err := getAccesstoken(code)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
@@ -82,7 +80,7 @@ func GoogleRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 }
 
 func getAccesstoken(code string) (string, error) {
-	data := fmt.Sprintf("client_id=%s&client_secret=%s&code=%s&redirect_uri=%s&grant_type=authorization_code", ID_client, secret_client, code, redirect_uri)
+	data := fmt.Sprintf("client_id=%s&client_secret=%s&code=%s&redirect_uri=%s&grant_type=authorization_code", os.Getenv("ID_client"), os.Getenv("secret_client"), code, os.Getenv("redirect_uri"))
 
 	req, err := http.NewRequest("POST", "https://oauth2.googleapis.com/token", bytes.NewBuffer([]byte(data)))
 	if err != nil {
