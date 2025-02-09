@@ -2,6 +2,8 @@ package posts
 
 import (
 	"database/sql"
+	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -15,6 +17,7 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
+	r.ParseMultipartForm(20 << 20)
 	referer := r.Referer()
 	err := r.ParseForm()
 	if err != nil {
@@ -26,13 +29,30 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	title := r.FormValue("title")
 	content := r.FormValue("content")
 	categories := r.Form["category"]
+	file, fileHeader, err := r.FormFile("image")
+	if err != nil {
+		handlers.RenderError(w, http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	sizeInMB := float64(fileHeader.Size) / (1024 * 1024)
+	if sizeInMB > 0 {
+		fmt.Println(sizeInMB)
+	}
+
+	image, err := io.ReadAll(file)
+	if err != nil {
+		handlers.RenderError(w, http.StatusInternalServerError)
+		return
+	}
 
 	if title == "" || content == "" || len(categories) == 0 || len([]rune(content)) > 1000 || len([]rune(title)) > 50 {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
-	
-	result, err := db.Exec("INSERT INTO Posts (Title, Content, DateCreation, ID_User) VALUES (?,?,?,?)", title, content, time.Now(), ID)
+
+	result, err := db.Exec("INSERT INTO Posts (Title, Content, DateCreation, Image,ID_User) VALUES (?,?,?,?,?)", title, content, time.Now(), image, ID)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
@@ -46,6 +66,6 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			return
 		}
 	}
-	
+
 	http.Redirect(w, r, referer, http.StatusFound)
 }
