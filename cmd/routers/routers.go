@@ -41,6 +41,10 @@ func Router(db *sql.DB) {
 		posts.FilterByCat(w, r, db)
 	})
 
+	http.HandleFunc("/getImage", func(w http.ResponseWriter, r *http.Request) {
+		posts.ImageHandler(w, r, db)
+	})
+
 	http.HandleFunc("/addPost", middleware.Authorization(
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			posts.AddPost(w, r, db)

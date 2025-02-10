@@ -67,7 +67,7 @@
       <!-- Create Post -->
       <div id="create-post" popover class="create-post">
         <h4>Create post</h4>
-        <form action="/addPost" method="post" onsubmit="return validateForm()">
+        <form action="/addPost" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
           <div class="title">
             <input placeholder="title" name="title" type="text" maxlength="50" required />
           </div>
@@ -79,6 +79,7 @@
             <input name="category" value="{{.ID}}" style="display: none" type="checkbox" id="{{.ID}}" />
             <label for="{{.ID}}">{{.NameCategory}}</label> {{end}}
           </div>
+          <input type="file" name="image">
           <div class="btn">
             <button type="submit">Create</button>
           </div>
@@ -100,6 +101,10 @@
           <h3 class="title">{{.Title}}</h3>
 
           <p class="content">{{.Content}}</p>
+
+          <div class="img">
+            <img width="100%" src="/getImage?id={{.ID}}" alt="image-post">
+          </div>
 
           <div class="footer-card">
             <div class="category">
