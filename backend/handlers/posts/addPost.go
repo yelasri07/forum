@@ -11,32 +11,6 @@ import (
 	"forum/backend/models"
 )
 
-func imageUpload(w http.ResponseWriter, r *http.Request) ([]byte, error) {
-	file, fileHeader, err := r.FormFile("image")
-	if err == nil {
-		defer file.Close()
-		sizeInMB := float64(fileHeader.Size) / (1024 * 1024)
-		if sizeInMB > 20 || (!strings.HasSuffix(fileHeader.Filename, ".jpeg") &&
-			!strings.HasSuffix(fileHeader.Filename, ".svg") &&
-			!strings.HasSuffix(fileHeader.Filename, ".png") &&
-			!strings.HasSuffix(fileHeader.Filename, ".gif") &&
-			!strings.HasSuffix(fileHeader.Filename, ".jpg")) {
-			handlers.RenderError(w, http.StatusBadRequest)
-			return nil, err
-		}
-
-		image, err := io.ReadAll(file)
-		if err != nil {
-			handlers.RenderError(w, http.StatusInternalServerError)
-			return nil, err
-		}
-
-		return image, nil
-	}
-
-	return nil, nil
-}
-
 // AddPost handles the creation of a new post by a user.
 func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method != http.MethodPost {
@@ -56,10 +30,27 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	title := r.FormValue("title")
 	content := r.FormValue("content")
 	categories := r.Form["category"]
+	file, fileHeader, err := r.FormFile("image")
 
-	image, err := imageUpload(w, r)
-	if err != nil {
-		return
+	image := []byte(nil)
+	if err == nil {
+		defer file.Close()
+		sizeInMB := float64(fileHeader.Size) / (1024 * 1024)
+		if sizeInMB > 20 || (!strings.HasSuffix(fileHeader.Filename, ".jpeg") &&
+			!strings.HasSuffix(fileHeader.Filename, ".svg") &&
+			!strings.HasSuffix(fileHeader.Filename, ".png") &&
+			!strings.HasSuffix(fileHeader.Filename, ".gif") &&
+			!strings.HasSuffix(fileHeader.Filename, ".jpg")) {
+			handlers.RenderError(w, http.StatusBadRequest)
+			return
+		}
+
+		img, err := io.ReadAll(file)
+		if err != nil {
+			handlers.RenderError(w, http.StatusInternalServerError)
+		}
+
+		image = append(img, img...)
 	}
 
 	if title == "" || content == "" || len(categories) == 0 || len([]rune(content)) > 1000 || len([]rune(title)) > 50 || !models.CheckCatExists(categories, db) {
