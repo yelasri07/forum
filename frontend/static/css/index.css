@@ -115,8 +115,8 @@
     }
 
     main article .cards .card .img img{
-        max-width: 250px;
-        width: 100%;
+        max-width: 400px;
+        width: auto;
         max-height: 350px;
         height: auto;
         border-radius: 10px;
