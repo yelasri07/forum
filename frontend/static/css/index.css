@@ -555,6 +555,15 @@
         main article .comments{
             width: 85%;
         }
+
+       
+    }
+
+    @media (max-width: 460px) {
+        main article .cards .card .img img{
+            max-width: 220px;
+            max-height: 120px;
+        }
     }
 
     @media (max-width: 425px){

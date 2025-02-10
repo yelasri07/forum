@@ -79,7 +79,14 @@
             <input name="category" value="{{.ID}}" style="display: none" type="checkbox" id="{{.ID}}" />
             <label for="{{.ID}}">{{.NameCategory}}</label> {{end}}
           </div>
-          <input type="file" name="image">
+          <div class="upload-image">
+            <label for="fileInput">
+              <input id="fileInput" style="display: none;" type="file" name="image">
+              Upload image <i class="fa-solid fa-cloud-arrow-up"></i>
+            </label>
+            <span style="display: block; margin-bottom: 10px;" id="fileName"></span>
+            <p>Please select an image in PNG, JPEG, JPG, SVG, or GIF format, and make sure the file size does not exceed 20MB.</p>
+          </div>
           <div class="btn">
             <button type="submit">Create</button>
           </div>
@@ -327,6 +334,16 @@
       }
       return true;
     }
+
+    document.getElementById("fileInput").onchange = function () {
+      let file = this.files[0];
+        if (file) {
+            document.getElementById("fileName").textContent = "Selected file: " + file.name;
+        } else {
+            document.getElementById("fileName").textContent = "No file selected.";
+        }
+    }
+
   </script>
 </body>
 

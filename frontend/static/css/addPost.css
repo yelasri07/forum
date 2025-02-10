@@ -102,6 +102,28 @@ main article .create-post .categories input:checked + label{
     color: var(--btn2);
 }
 
+main article .create-post .upload-image{
+    text-align: center;
+    margin: 10px 0;
+}
+
+main article .create-post .upload-image p{
+    color: #000;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-weight: 400;
+    font-size: .8em;
+}
+
+main article .create-post .upload-image label{
+    margin-bottom: 10px;
+    display: inline-block;
+    background-color: var(--bg);
+    padding: 5px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
 main article .create-post .btn{
     margin-top: 10px;
     text-align: center;
