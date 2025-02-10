@@ -50,7 +50,7 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			handlers.RenderError(w, http.StatusInternalServerError)
 		}
 
-		image = append(img, img...)
+		image = append(image, img...)
 	}
 
 	if title == "" || content == "" || len(categories) == 0 || len([]rune(content)) > 1000 || len([]rune(title)) > 50 || !models.CheckCatExists(categories, db) {
