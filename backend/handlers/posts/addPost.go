@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"forum/backend/handlers"
@@ -15,7 +16,11 @@ func imageUpload(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 	if err == nil {
 		defer file.Close()
 		sizeInMB := float64(fileHeader.Size) / (1024 * 1024)
-		if sizeInMB > 20 {
+		if sizeInMB > 20 || (!strings.HasSuffix(fileHeader.Filename, ".jpeg") &&
+			!strings.HasSuffix(fileHeader.Filename, ".svg") &&
+			!strings.HasSuffix(fileHeader.Filename, ".png") &&
+			!strings.HasSuffix(fileHeader.Filename, ".gif") &&
+			!strings.HasSuffix(fileHeader.Filename, ".jpg")) {
 			handlers.RenderError(w, http.StatusBadRequest)
 			return nil, err
 		}
