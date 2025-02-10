@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS Posts (
     Title char(50),
     Content TEXT, 
     DateCreation DATE,
-    Image BLOB,
     ID_User INTEGER,
     FOREIGN KEY (ID_User) REFERENCES users(ID) ON DELETE CASCADE ON UPDATE CASCADE 
 );

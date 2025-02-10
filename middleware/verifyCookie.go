@@ -11,7 +11,7 @@ import (
 // If valid, it returns the cookie, otherwise, it returns an error.
 func VerifyCookie(r *http.Request, db *sql.DB) (*http.Cookie, error) {
 	cookie, err := r.Cookie("Token")
-	if err != nil || cookie.Value == "" {
+	if err != nil {
 		return nil, err
 	}
 	exist := ""

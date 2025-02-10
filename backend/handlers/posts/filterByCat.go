@@ -37,7 +37,7 @@ func FilterByCat(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	var post_ids []int
 	for _, category := range categories {
-		err := models.GetPostIDsByCategory(db, &post_ids, category)
+		err = models.GetPostIDsByCategory(db, category, &post_ids)
 		if err != nil {
 			handlers.RenderError(w, http.StatusInternalServerError)
 			return

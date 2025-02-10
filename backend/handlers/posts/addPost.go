@@ -2,34 +2,12 @@ package posts
 
 import (
 	"database/sql"
-	"io"
 	"net/http"
 	"time"
 
 	"forum/backend/handlers"
+	"forum/backend/models"
 )
-
-func imageUpload(w http.ResponseWriter, r *http.Request) ([]byte, error) {
-	file, fileHeader, err := r.FormFile("image")
-	if err == nil {
-		defer file.Close()
-		sizeInMB := float64(fileHeader.Size) / (1024 * 1024)
-		if sizeInMB > 20 {
-			handlers.RenderError(w, http.StatusBadRequest)
-			return nil, err
-		}
-
-		image, err := io.ReadAll(file)
-		if err != nil {
-			handlers.RenderError(w, http.StatusInternalServerError)
-			return nil, err
-		}
-
-		return image, nil
-	}
-
-	return nil, nil
-}
 
 // AddPost handles the creation of a new post by a user.
 func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -38,7 +16,6 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	r.ParseMultipartForm(10 << 20)
 	referer := r.Referer()
 	err := r.ParseForm()
 	if err != nil {
@@ -51,17 +28,12 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	content := r.FormValue("content")
 	categories := r.Form["category"]
 
-	image, err := imageUpload(w, r)
-	if err != nil {
-		return
-	}
-
-	if title == "" || content == "" || len(categories) == 0 || len([]rune(content)) > 1000 || len([]rune(title)) > 50 {
+	if title == "" || content == "" || len(categories) == 0 || len([]rune(content)) > 1000 || len([]rune(title)) > 50 || !models.CheckCatExists(categories, db) {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
-
-	result, err := db.Exec("INSERT INTO Posts (Title, Content, DateCreation, Image,ID_User) VALUES (?,?,?,?,?)", title, content, time.Now(), image, ID)
+	
+	result, err := db.Exec("INSERT INTO Posts (Title, Content, DateCreation, ID_User) VALUES (?,?,?,?)", title, content, time.Now(), ID)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
@@ -75,6 +47,6 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			return
 		}
 	}
-
+	
 	http.Redirect(w, r, referer, http.StatusFound)
 }

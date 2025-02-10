@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// Authorization checks if the user is logged in by verifying the session token and expiration time 
+// Authorization checks if the user is logged in by verifying the session token and expiration time
 // from the database. If valid, it attaches user details to the request context and proceeds to the next handler.
 func Authorization(next http.Handler, db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -29,7 +29,7 @@ func GetPostByID(db *sql.DB, postID, UserId int) (*PostCat, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	
+
 	var post PostCat
 	for rows.Next() {
 
@@ -53,13 +53,14 @@ func GetPostByID(db *sql.DB, postID, UserId int) (*PostCat, error) {
 }
 
 // GetPostIDsByCategory retrieves post IDs that belong to a specific category and appends them to the provided slice if they are not already present.
-func GetPostIDsByCategory(db *sql.DB, ids *[]int, category string) error {
+func GetPostIDsByCategory(db *sql.DB, category string, ids *[]int) error {
 	query := `
 		SELECT p.ID
 		FROM Posts p
 		INNER JOIN PostCategory pc on p.ID==pc.ID_Post
 		WHERE ID_Category==?;
 	`
+
 	rows, err := db.Query(query, category)
 	if err != nil {
 		return err

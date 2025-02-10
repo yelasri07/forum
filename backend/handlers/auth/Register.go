@@ -26,21 +26,8 @@ func Register(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
-
 	UserName := r.FormValue("UserName")
 	Email := r.FormValue("Email")
-
-	if UserName == "" {
-		e := &models.ErrorRegister{ErrName: "Username cannot be emty"}
-		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
-		return
-	}
-
-	if Email == "" {
-		e := &models.ErrorRegister{ErrEmail: "Email cannot be emty"}
-		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
-		return
-	}
 
 	isUniqueUserName, err := models.UserExists(db, UserName, " UserName ")
 	if err != nil {
@@ -54,7 +41,7 @@ func Register(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	if !Verify(w, isUniqueUserName, isUniqueEmail, Email, r.FormValue("Password")) {
+	if !Verify(w, isUniqueUserName, isUniqueEmail, Email, UserName, r.FormValue("Password")) {
 		return
 	}
 	password, _ := bcrypt.GenerateFromPassword([]byte(r.FormValue("Password")), 10)
@@ -75,8 +62,20 @@ func Register(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func Verify(w http.ResponseWriter, isUniqueUserName, isUniqueEmail bool, Email, Password string) bool {
+func Verify(w http.ResponseWriter, isUniqueUserName, isUniqueEmail bool, Email, UserName, Password string) bool {
 	e := &models.ErrorRegister{}
+	if Email == "" {
+		e.ErrName = "Username cannot be emty"
+	}
+	if UserName == "" {
+		e.ErrName = "Username cannot be emty"
+	}
+	if !utils.ValidName(UserName) {
+		e.ErrName = "Username cannot conatains a special charachters like: \"@()-.,;...\" except: _"
+	}
+	if len([]rune(Password)) < 8 || len([]rune(Password)) > 20 {
+		e.ErrPassword = "Password must be greater than 8 characters and less than 20 characters"
+	}
 	if !isUniqueUserName {
 		e.ErrName = "Username Already taken please chose Another"
 	}
@@ -85,9 +84,6 @@ func Verify(w http.ResponseWriter, isUniqueUserName, isUniqueEmail bool, Email, 
 	}
 	if !utils.IsValidEmail(Email) {
 		e.ErrEmail = "Email must be in the format: example@example.example"
-	}
-	if len([]rune(Password)) < 8 || len([]rune(Password)) > 20 {
-		e.ErrPassword = "Password must be greater than 8 characters and less than 20 characters"
 	}
 	if e.ErrEmail != "" || e.ErrName != "" || e.ErrPassword != "" {
 		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
