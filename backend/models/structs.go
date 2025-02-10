@@ -27,7 +27,7 @@ type PostCat struct {
 	ID              int
 	Title           string
 	Content         string
-
+	Image 			[]byte
 	DateCreation    time.Time
 	Date            string
 	Categories      string

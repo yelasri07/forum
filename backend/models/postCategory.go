@@ -38,7 +38,8 @@ func GetAllPostCat(db *sql.DB, UserId int) ([]*PostCat, error) {
 	p.Content, 
 	p.DateCreation, 
 	GROUP_CONCAT(c.Name_Category, ' #') AS Categories, 
-	u.UserName 
+	u.UserName,
+	p.Image
 	FROM Posts p 
 	JOIN 
 	PostCategory pc ON p.ID = pc.ID_Post 
@@ -56,8 +57,7 @@ func GetAllPostCat(db *sql.DB, UserId int) ([]*PostCat, error) {
 	for rows.Next() {
 
 		var post PostCat
-
-		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.DateCreation, &post.Categories, &post.CreatedBy)
+		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.DateCreation, &post.Categories, &post.CreatedBy, &post.Image)
 		if err != nil {
 			return nil, err
 		}

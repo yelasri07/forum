@@ -102,9 +102,11 @@
 
           <p class="content">{{.Content}}</p>
 
+          {{if .Image}}
           <div class="img">
-            <img width="100%" src="/getImage?id={{.ID}}" alt="image-post">
+            <img src="/getImage?id={{.ID}}" alt="image-post">
           </div>
+          {{end}}
 
           <div class="footer-card">
             <div class="category">
