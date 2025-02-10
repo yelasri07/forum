@@ -115,10 +115,10 @@
     }
 
     main article .cards .card .img img{
-        max-width: 300px;
+        max-width: 250px;
         width: 100%;
+        max-height: 350px;
         height: auto;
-        max-height: 400px;
         border-radius: 10px;
         object-fit: cover;
     }
