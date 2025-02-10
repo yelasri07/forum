@@ -25,6 +25,10 @@ func ImageHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	imageContentType := http.DetectContentType(image)
 
+	if imageContentType == "text/xml; charset=utf-8" {
+		imageContentType = "image/svg+xml"
+	}
+
 	w.Header().Set("Content-Type", imageContentType)
 	w.Write(image)
 }
