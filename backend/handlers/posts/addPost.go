@@ -48,6 +48,7 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		img, err := io.ReadAll(file)
 		if err != nil {
 			handlers.RenderError(w, http.StatusInternalServerError)
+			return
 		}
 
 		image = append(image, img...)
