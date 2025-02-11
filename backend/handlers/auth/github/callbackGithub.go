@@ -31,6 +31,7 @@ type GitHubEmail struct {
 
 func CallbackGithubRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	code := r.URL.Query().Get("code")
+	fmt.Println(code)
 	if code == "" {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
@@ -38,6 +39,7 @@ func CallbackGithubRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) 
 
 	accessToken, err := getAccessToken(code)
 	if err != nil {
+		fmt.Println(err)
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
 	}

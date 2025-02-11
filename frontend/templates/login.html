@@ -41,6 +41,9 @@
         </div>
         <div class="forum">
           <h2>Forum</h2>
+          {{if .AlreadyLogedWithGithub}}
+          <p style="color: red">{{.AlreadyLogedWithGithub}}</p>
+          {{end}}
         </div>
         <div>
           <div>
@@ -80,14 +83,14 @@
         <div class="auth-externe">
           <a
             class="github"
-            href="https://github.com/login/oauth/authorize?client_id=Ov23liJqHHscEvIqlYIx&redirect_uri=http://localhost:8080/callbackUrlRegister&scope=user"
+            href="https://github.com/login/oauth/authorize?client_id=Ov23liJqHHscEvIqlYIx&redirect_uri=http://localhost:8080/callbackUrlLogin&scope=user"
           >
             <i class="fa-brands fa-github"></i>
             Github
           </a>
           <a
             class="google"
-            href="https://accounts.google.com/o/oauth2/auth?scope=openid%20email%20profile&access_type=offline&include_granted_scopes=true&response_type=code&redirect_uri=http://localhost:8080/callbackRegisterGoogle&client_id=143686775395-8hvrk8e9bji1g6e2o2s7ogubeblhgrcp.apps.googleusercontent.com "
+            href="https://accounts.google.com/o/oauth2/auth?scope=openid%20email%20profile&access_type=offline&include_granted_scopes=true&response_type=code&redirect_uri=http://localhost:8080/callbackLoginGoogle&client_id=143686775395-8hvrk8e9bji1g6e2o2s7ogubeblhgrcp.apps.googleusercontent.com "
           >
             <i class="fa-brands fa-google"></i>
             Google

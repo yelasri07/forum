@@ -43,7 +43,7 @@ func CallbackGithubLogin(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	if ID == -1 || !utils.IsValidEmail(user.Email) {
 		e := &models.ErrorRegister{AlreadyLogedWithGithub: "You don't have account try to Register."}
-		handlers.RenderTemplate(w, "register.html", e, http.StatusConflict)
+		handlers.RenderTemplate(w, "login.html", e, http.StatusConflict)
 		return
 	}
 	token, err := models.GenerateToken(ID, db)
