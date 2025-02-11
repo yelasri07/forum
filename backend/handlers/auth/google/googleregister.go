@@ -26,6 +26,7 @@ func GoogleRegister(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
+	
 	accessToken, err := getAccesstoken(code, os.Getenv("redirect_uri_register"))
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
