@@ -50,7 +50,6 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			handlers.RenderError(w, http.StatusInternalServerError)
 			return
 		}
-
 		image = append(image, img...)
 	}
 
