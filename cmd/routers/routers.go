@@ -42,7 +42,7 @@ func Router(db *sql.DB) {
 	})
 
 	http.HandleFunc("/getImage", func(w http.ResponseWriter, r *http.Request) {
-		posts.ImageHandler(w, r, db)
+		handlers.ImageHandler(w, r, db)
 	})
 
 	http.HandleFunc("/addPost", middleware.Authorization(
