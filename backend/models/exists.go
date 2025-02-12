@@ -4,7 +4,7 @@ import "database/sql"
 
 // UserExists checks if a user exists in the database based on the given value and search criteria.
 func UserExists(db *sql.DB, value string, searchBy string) (bool, error) {
-	rows, err := db.Query("SELECT ID from Users where" +searchBy+" =?", value)
+	rows, err := db.Query("SELECT ID from Users where"+searchBy+" =?", value)
 	if err != nil {
 		return false, err
 	}
@@ -18,8 +18,8 @@ func UserExists(db *sql.DB, value string, searchBy string) (bool, error) {
 }
 
 // VerifyEmail checks if the given email exists in the database and returns the user ID if found.
-func VerifyEmail(db *sql.DB, Email string) (int, error) {
-	rows, err := db.Query("SELECT ID FROM users WHERE Email = ?", Email)
+func VerifyEmail(db *sql.DB, Email, authType string) (int, error) {
+	rows, err := db.Query("SELECT ID FROM users WHERE Email = ? AND AuthType = ?", Email, authType)
 	if err != nil {
 		return -1, err
 	}

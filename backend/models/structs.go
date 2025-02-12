@@ -2,7 +2,11 @@ package models
 
 import "time"
 
-//errors
+type GetToken struct {
+	Token string `json:"access_token"`
+}
+
+// errors
 type ErrorRegister struct {
 	ErrName     string
 	ErrEmail    string
@@ -27,7 +31,7 @@ type PostCat struct {
 	ID              int
 	Title           string
 	Content         string
-	Image 			[]byte
+	Image           []byte
 	DateCreation    time.Time
 	Date            string
 	Categories      string

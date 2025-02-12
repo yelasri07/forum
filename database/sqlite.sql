@@ -2,11 +2,12 @@ CREATE TABLE IF not EXISTS users (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
     UserName char(20) UNIQUE NOT NULL,
     Email char(50) UNIQUE NOT NULL,
-    Password char(20) NOT NULL,
+    Password char(20),
     Created_At DATE NOT NULL,
     Session TEXT ,
-    Expared_At DATE
-);
+    Expared_At DATE, 
+    AuthType char(10) DEFAULT "normal"
+ );
 CREATE TABLE IF NOT EXISTS Posts (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
     Title char(50),

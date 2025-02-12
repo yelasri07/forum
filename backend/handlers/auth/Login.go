@@ -27,7 +27,7 @@ func Login(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	Email := r.FormValue("Email")
 	Pass := r.FormValue("Password")
 
-	ID, err := models.VerifyEmail(db, Email)
+	ID, err := models.VerifyEmail(db, Email,"normal")
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return

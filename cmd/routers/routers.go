@@ -6,6 +6,7 @@ import (
 
 	"forum/backend/handlers"
 	"forum/backend/handlers/auth"
+	"forum/backend/handlers/auth/github"
 	"forum/backend/handlers/posts"
 	"forum/middleware"
 )
@@ -35,6 +36,10 @@ func Router(db *sql.DB) {
 
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		auth.Logout(w, r, db)
+	})
+	//github
+	http.HandleFunc("/callbackRegister", func(w http.ResponseWriter, r *http.Request) {
+		github.RegisterGithub(w, r, db)
 	})
 
 	http.HandleFunc("/filter", func(w http.ResponseWriter, r *http.Request) {
