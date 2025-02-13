@@ -57,9 +57,14 @@ form .form .auth a {
 
 form .logo h1 {
   font-size: 6em;
-  color: var(--text);
   font-weight: 700;
 }
+
+form .logo h1 a {
+  text-decoration: none;
+  color: var(--text);
+}
+
 
 form .form {
   background-color: var(--text);
@@ -85,8 +90,12 @@ form .form .forum {
 
 form .form .forum h2 {
   font-size: 3.2em;
-  color: var(--background);
   font-weight: 700;
+}
+
+form .form .forum h2 a {
+  text-decoration: none;
+  color: var(--background);
 }
 
 form .form > div:not(.auth) {

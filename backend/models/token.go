@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/gofrs/uuid/v5"
+	"github.com/gofrs/uuid"
 )
 
 // GenerateToken generates a new session token for a user, updates the user's session in the database,

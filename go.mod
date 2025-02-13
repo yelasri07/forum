@@ -8,3 +8,5 @@ require (
 )
 
 require github.com/gofrs/uuid/v5 v5.3.0
+
+require github.com/gofrs/uuid v4.4.0+incompatible // indirect
