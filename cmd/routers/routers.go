@@ -37,7 +37,12 @@ func Router(db *sql.DB) {
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		auth.Logout(w, r, db)
 	})
-	//github
+
+	http.HandleFunc("/askLink", func(w http.ResponseWriter, r *http.Request) {
+		handlers.AskLink(w, r, db)
+	})
+
+	// github
 	http.HandleFunc("/callbackRegister", func(w http.ResponseWriter, r *http.Request) {
 		github.RegisterGithub(w, r, db)
 	})

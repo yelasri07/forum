@@ -6,6 +6,11 @@ type GetToken struct {
 	Token string `json:"access_token"`
 }
 
+type AskLink struct {
+	UserID   int
+	AuthType string
+}
+
 // errors
 type ErrorRegister struct {
 	ErrName     string

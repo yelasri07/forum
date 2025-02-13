@@ -54,7 +54,11 @@ func Register(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	ID, _ := result.LastInsertId()
+	ID, err := result.LastInsertId()
+	if err != nil {
+		handlers.RenderError(w, http.StatusInternalServerError)
+		return
+	}
 
 	token, err := models.GenerateToken(int(ID), db)
 	if err != nil {

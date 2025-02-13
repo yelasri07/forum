@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum</title>
+</head>
+<body>
+    
+    <div class="container">
+        <p>{{.AuthType}}</p>
+        <form action="/askLink" method="Post">
+            <input type="hidden" value="{{.UserID}}" name="accept" required>
+            <button type="submit">accept</button>
+            <a href="/sign-up">Cancel</a>
+        </form>
+    </div>
+
+</body>
+</html>

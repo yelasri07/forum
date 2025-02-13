@@ -5,9 +5,9 @@ CREATE TABLE IF not EXISTS users (
     Password char(20),
     Created_At DATE NOT NULL,
     Session TEXT ,
-    Expared_At DATE, 
-    AuthType char(10) DEFAULT "normal"
- );
+    Expared_At DATE,
+    AuthType INTEGER DEFAULT 0
+);
 CREATE TABLE IF NOT EXISTS Posts (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
     Title char(50),
