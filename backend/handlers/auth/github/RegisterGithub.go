@@ -34,13 +34,18 @@ type GitHubEmail struct {
 }
 
 func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	if r.Method != http.MethodGet {
+		handlers.RenderError(w, http.StatusMethodNotAllowed)
+		return
+	}
+
 	code := r.URL.Query().Get("code")
 	if code == "" {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
 
-	accessToken, err := GetAccessToken(code)
+	accessToken, err := getAccessToken(code)
 	if err != nil {
 		cookie := &http.Cookie{Name: "Token", Value: "", MaxAge: -1, HttpOnly: true}
 		http.SetCookie(w, cookie)
@@ -157,7 +162,7 @@ func GetDataUser(accessToken string) (*GithubUser, error) {
 	return &user, nil
 }
 
-func GetAccessToken(code string) (string, error) {
+func getAccessToken(code string) (string, error) {
 	data := fmt.Sprintf("client_id=%s&client_secret=%s&code=%s", client_id, client_secret, code)
 	req, err := http.NewRequest("POST", "https://github.com/login/oauth/access_token", bytes.NewBuffer([]byte(data)))
 	if err != nil {
