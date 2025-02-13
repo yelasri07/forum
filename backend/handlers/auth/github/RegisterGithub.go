@@ -94,21 +94,19 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			return
 		}
 	} else {
-
-		token, err := models.GenerateToken(int(ID), db)
-		if err != nil {
-			handlers.RenderError(w, http.StatusInternalServerError)
-			return
-		}
-
-		cookie := &http.Cookie{Name: "UserID", Value: token, MaxAge: 3600, HttpOnly: true}
-
-		http.SetCookie(w, cookie)
-
 		if AuthType == 0 {
+			token, err := models.GenerateToken(int(ID), db)
+			if err != nil {
+				handlers.RenderError(w, http.StatusInternalServerError)
+				return
+			}
+
+			cookie := &http.Cookie{Name: "Token", Value: token, MaxAge: 3600, HttpOnly: true}
+
+			http.SetCookie(w, cookie)
 
 			a := models.AskLink{UserID: ID, AuthType: "github"}
-			err := handlers.RenderTemplate(w, "askLink.html", a, http.StatusOK)
+			err = handlers.RenderTemplate(w, "askLink.html", a, http.StatusOK)
 			if err != nil {
 				handlers.RenderError(w, http.StatusInternalServerError)
 				return
