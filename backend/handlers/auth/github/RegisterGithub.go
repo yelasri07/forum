@@ -42,8 +42,9 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	accessToken, err := GetAccessToken(code)
 	if err != nil {
-		_, err = http.Post("http://localhost:8080/logout", "application/json", nil)
-		fmt.Println(err)
+		cookie := &http.Cookie{Name: "Token", Value: "", MaxAge: -1, HttpOnly: true}
+		http.SetCookie(w, cookie)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
