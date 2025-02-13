@@ -24,5 +24,6 @@ func RegisterGoogle(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
+	
 	fmt.Println(code)
 }
