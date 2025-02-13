@@ -2,7 +2,6 @@ package auth
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -48,7 +47,6 @@ func Register(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	password, _ := bcrypt.GenerateFromPassword([]byte(r.FormValue("Password")), 10)
 
 	result, err := db.Exec("INSERT INTO Users (UserName, Email, Password, Created_At, Session, Expared_At) VALUES ( ?,?,?,?,?,?)", UserName, Email, string(password), time.Now(), "", nil)
-	fmt.Println(err)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
