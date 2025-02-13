@@ -54,6 +54,10 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 
 	user, err := GetDataUser(accessToken)
+	if err != nil {
+		handlers.RenderError(w, http.StatusInternalServerError)
+		return
+	}
 
 	if user.Email == "" {
 		email, err := getPrimaryEmail(accessToken)
@@ -147,13 +151,15 @@ func GetDataUser(accessToken string) (*GithubUser, error) {
 		return nil, err
 	}
 
+	if res.StatusCode != http.StatusOK {
+		return nil, err
+	}
+
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
-	if res.StatusCode != http.StatusOK {
-		return nil, err
-	}
+	
 
 	var user GithubUser
 	if err := json.Unmarshal(body, &user); err != nil {
@@ -175,13 +181,16 @@ func getAccessToken(code string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	if resp.StatusCode != http.StatusOK {
+		return "", err
+	}
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
-	if resp.StatusCode != http.StatusOK {
-		return "", err
-	}
+	
 	var tokenResp models.GetToken
 	if err := json.Unmarshal(body, &tokenResp); err != nil {
 		return "", err
@@ -207,12 +216,12 @@ func getPrimaryEmail(accessToken string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
+	if resp.StatusCode != http.StatusOK {
 		return "", err
 	}
 
-	if resp.StatusCode != http.StatusOK {
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
 		return "", err
 	}
 

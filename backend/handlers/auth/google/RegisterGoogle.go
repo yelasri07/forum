@@ -1,16 +1,22 @@
 package google
 
 import (
+	"bytes"
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"forum/backend/handlers"
+	"forum/backend/handlers/auth/github"
+	"forum/backend/models"
 )
 
 const (
-	clientID      = "978621672489-dsv02jh60f8jbkqdd3khg2p7jtse3om5.apps.googleusercontent.com"
+	client_id     = "978621672489-dsv02jh60f8jbkqdd3khg2p7jtse3om5.apps.googleusercontent.com"
 	client_secret = "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"
+	redirect_uri  = "http://localhost:8080/RegisterGoogle"
 )
 
 func RegisterGoogle(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -24,6 +30,52 @@ func RegisterGoogle(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
-	
-	fmt.Println(code)
+
+	accessToken, err := getAccessToken(code)
+	if err != nil {
+		handlers.RenderError(w, http.StatusInternalServerError)
+		return
+	}
+
+	_, err = getUserInfos(accessToken)
+	if err != nil {
+		handlers.RenderError(w, http.StatusInternalServerError)
+		return
+	}
+}
+
+func getAccessToken(code string) (string, error) {
+	data := fmt.Sprintf("client_id=%s&client_secret=%s&code=%s&redirect_uri=%s&grant_type=authorization_code",
+		client_id, client_secret, code, redirect_uri)
+	req, err := http.NewRequest("POST", "https://oauth2.googleapis.com/token", bytes.NewBuffer([]byte(data)))
+	if err != nil {
+		return "", err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return "", err
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	var user models.GetToken
+	if err := json.Unmarshal(body, &user); err != nil {
+		return "", err
+	}
+
+	return user.Token, nil
+}
+
+func getUserInfos(accesToken string) (*github.GithubUser, error) {
+	return nil, nil
 }
