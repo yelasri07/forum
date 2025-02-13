@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -60,7 +61,7 @@ func getAccessToken(code string) (string, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return "", err
+		return "", errors.New("err")
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -76,6 +77,29 @@ func getAccessToken(code string) (string, error) {
 	return user.Token, nil
 }
 
-func getUserInfos(accesToken string) (*github.GithubUser, error) {
+func getUserInfos(accessToken string) (*github.GithubUser, error) {
+	req, err := http.NewRequest("GET", "https://www.googleapis.com/oauth2/v2/userinfo", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Authorization", "Bearer "+accessToken)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("failed to fetch user info")
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(string(body))
+
 	return nil, nil
 }
