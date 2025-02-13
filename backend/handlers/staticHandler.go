@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// StaticHandler handles requests for static files...
 func StaticHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		RenderError(w, http.StatusMethodNotAllowed)

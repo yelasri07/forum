@@ -2,7 +2,6 @@ package posts
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -10,6 +9,7 @@ import (
 	"forum/backend/models"
 )
 
+// AddLikePost handles adding a "like" or "dislike" reaction to a post.
 func AddLikePost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method != http.MethodPost {
 		handlers.RenderError(w, http.StatusMethodNotAllowed)
@@ -24,25 +24,9 @@ func AddLikePost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	status := r.FormValue("status")
 	userID := r.Context().Value("userId").(int)
-	postIDStr := r.FormValue("postID")
 	refer := r.Referer()
-	postID, err := strconv.Atoi(postIDStr)
-	if err != nil || postID <= 0 {
-		http.Error(w, "Invalid post ID format", http.StatusBadRequest)
-		return
-	}
-	if status != "like" && status != "dislike" {
-		handlers.RenderError(w, http.StatusBadRequest)
-		return
-	}
-
-	boolen, err := models.CheckIdPost(db, postID, "Posts")
-	if err != nil {
-		fmt.Println(err)
-		handlers.RenderError(w, http.StatusInternalServerError)
-		return
-	}
-	if !boolen {
+	postID, err := strconv.Atoi(r.FormValue("postID"))
+	if err != nil || !models.CheckIdExists(db, postID, "Posts") || (status != "like" && status != "dislike") {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
@@ -54,5 +38,4 @@ func AddLikePost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 
 	http.Redirect(w, r, refer, http.StatusFound)
-
 }

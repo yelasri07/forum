@@ -7,11 +7,11 @@ import (
 	"forum/backend/handlers"
 	"forum/backend/models"
 	"forum/middleware"
-	"forum/utils"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
+// LoginPage renders the login page, or redirects if the user is already authenticated.
 func Login(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method != http.MethodPost {
 		http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
@@ -27,18 +27,19 @@ func Login(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	Email := r.FormValue("Email")
 	Pass := r.FormValue("Password")
 
-	ID, err := models.VerifyEmail(db, Email)
+	ID, _, err := models.VerifyEmail(db, Email)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
 	}
-	if ID == -1 || !utils.IsValidEmail(Email) {
-		e := models.ErrorRegister{ErrEmail: "Incorrect email or format error"}
+
+	if ID == -1 {
+		e := models.ErrorRegister{ErrEmail: "Incorrect email"}
 		handlers.RenderTemplate(w, "login.html", e, http.StatusConflict)
 		return
 	}
-	
-	PasswordDatabase, err := models.VerifyPassword(db, ID)
+
+	PasswordDatabase, err := models.GetPassword(db, int(ID))
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
@@ -51,7 +52,7 @@ func Login(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	token, err := models.GenerateToken(ID, db)
+	token, err := models.GenerateToken(int(ID), db)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return

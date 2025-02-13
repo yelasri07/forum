@@ -8,6 +8,7 @@ import (
 	"forum/middleware"
 )
 
+// IndexPage handles the request for the homepage.
 func IndexPage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.URL.Path != "/" {
 		RenderError(w, http.StatusNotFound)
@@ -19,34 +20,53 @@ func IndexPage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	Homepage := GetDataHomePage(r, db)
+	var idUser int
+	var userName string
+	token, err := middleware.VerifyCookie(r, db)
+	if err == nil {
+		idUser, userName = models.GetInfos(db, token.Value)
+	}
 
-	err := RenderTemplate(w, "index.html", Homepage, http.StatusOK)
+	Homepage, err := GetDataHomePage(r, db, idUser)
+	if err != nil {
+		RenderError(w, http.StatusInternalServerError)
+		return
+	}
+
+	Homepage.UserName = userName
+
+	Homepage.PostCat, err = models.GetAllPostCat(db, idUser)
+	if err != nil {
+		RenderError(w, http.StatusInternalServerError)
+		return
+	}
+
+	err = RenderTemplate(w, "index.html", Homepage, http.StatusOK)
 	if err != nil {
 		RenderError(w, http.StatusInternalServerError)
 		return
 	}
 }
 
-func GetDataHomePage(r *http.Request, db *sql.DB) *models.HomePage {
+// GetDataHomePage retrieves data for the homepage based on whether the user is logged in.
+func GetDataHomePage(r *http.Request, db *sql.DB, idUser int) (*models.HomePage, error) {
 	Homepage := new(models.HomePage)
+	var err error
 
-	Token, err := middleware.VerifyCookie(r, db)
-	id_user := -1
-	if err == nil {
+	if idUser != 0 {
 		Homepage.IsLogged = true
-		ID, userName := models.GetInfos(db, Token.Value)
-		Homepage.UserName = userName
-		totalLikes, _ := models.GetTotalLikesByUser(db, ID)
-		Homepage.TotalLikes = totalLikes
-		id_user = ID
+		Homepage.TotalLikes, err = models.GetTotalLikesByUser(db, idUser)
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		Homepage.IsLogged = false
 	}
 
-	// Always fetch all posts
-	Homepage.PostCat, _ = models.GetAllPostCat(db, id_user)
-	Homepage.Categories, _ = models.GetAllCategories(db)
+	Homepage.Categories, err = models.GetAllCategories(db)
+	if err != nil {
+		return nil, err
+	}
 
-	return Homepage
+	return Homepage, nil
 }

@@ -7,6 +7,8 @@ import (
 	"forum/utils"
 )
 
+// SelectTheComment retrieves a list of comments for a specific post from the database, along with their like and dislike counts, 
+// and the reaction status of the user (like/dislike). It also formats the comment's creation date and adds reaction status flags.
 func SelectTheComment(postID, userID int, db *sql.DB) ([]*Comment, error) {
 	query := `
 	   SELECT c.ID , c.Content , u.UserName , c.DateCreation

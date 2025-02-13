@@ -10,6 +10,7 @@ import (
 	"forum/backend/models"
 )
 
+// AddComments handles adding a comment to a post.
 func AddComments(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method != http.MethodPost {
 		handlers.RenderError(w, http.StatusMethodNotAllowed)
@@ -21,29 +22,13 @@ func AddComments(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
-	userID := r.Context().Value("userId").(int)
 
+	userID := r.Context().Value("userId").(int)
 	comment := r.FormValue("comment")
 	postIDStr := strings.Join(r.Form["postID"], "")
 
 	postID, err := strconv.Atoi(postIDStr)
-	if err != nil || postID <= 0 {
-		handlers.RenderError(w, http.StatusBadRequest)
-		return
-	}
-
-	if comment == "" {
-		handlers.RenderError(w, http.StatusBadRequest)
-		return
-	}
-	
-	boolen , err := models.CheckIdPost(db, postID, "Posts")
-	if err != nil {
-		handlers.RenderError(w, http.StatusInternalServerError)
-		return
-	}
-
-	if !boolen {
+	if err != nil || comment == "" || len([]rune(comment)) > 500 || !models.CheckIdExists(db, postID, "Posts") {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}

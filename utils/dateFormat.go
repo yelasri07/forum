@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+// DateFromat converts a given time into a human-readable format representing 
+// the time difference in seconds, minutes, hours, days, or weeks.
 func DateFromat(date time.Time) string {
 	diff := time.Since(date)
 	switch {

@@ -4,15 +4,14 @@ import (
 	"database/sql"
 )
 
-func CheckIdPost(db *sql.DB, postID int, table string) (bool, error) {
+// CheckIdExists checks if a given ID exists in the specified table.
+func CheckIdExists(db *sql.DB, postID int, table string) (bool) {
 	query := `
 	  SELECT ID FROM ` + table + `
 	  WHERE ID = ?
 	`
 	var id int
-	err := db.QueryRow(query, postID).Scan(&id)
-	if err != nil {
-		return false , err
-	}
-	return id != 0 , nil
+	db.QueryRow(query, postID).Scan(&id)
+
+	return id != 0
 }

@@ -13,6 +13,7 @@
         margin: 0;
         box-sizing: border-box;
         font-family: sans-serif;
+        
     }
     
     body {
@@ -108,6 +109,19 @@
         margin: 10px 0;
         line-height: 23px;
     }
+
+    main article .cards .card .img{
+        margin: 10px 0;
+    }
+
+    main article .cards .card .img img{
+        max-width: 400px;
+        width: auto;
+        max-height: 350px;
+        height: auto;
+        border-radius: 10px;
+        object-fit: cover;
+    }
     
     main article .cards .card .footer-card {
         display: flex;
@@ -192,14 +206,13 @@
         cursor: pointer;
     }
     
-    main aside .profil>div a,
-    main aside .profil>div p {
+    main aside .profil>div a{
         font-size: 1.15em;
         color: #000;
         text-decoration: none;
     }
     
-    main aside .profil>div p i[class="fa-solid fa-heart"] {
+    main aside .profil>div a i[class="fa-solid fa-heart"] {
         color: var(--btn2);
     }
     
@@ -317,6 +330,7 @@
         border-radius: 10px;
         padding: 10px;
         margin: 10px 0;
+        word-break: break-all;
     }
 
     main article .comments .comment:first-child,
@@ -352,6 +366,9 @@
         padding-left: 9px;
     }
 
+    main article .comments .comment .footer-comment .reacts{
+        justify-content: start;
+    }
 
     main article .comments .send-comment{
         margin-top: 15px;
@@ -538,5 +555,71 @@
         main article .comments{
             width: 85%;
         }
+
+       
+    }
+
+    @media (max-width: 460px) {
+        main article .cards .card .img img{
+            max-width: 220px;
+            max-height: 120px;
+        }
+    }
+
+    @media (max-width: 425px){
+        header{
+            font-size: 10px;
+        }
+
+        header nav ul{
+            gap: 4px;
+        }
+
+        header nav ul>li{
+            gap: 4px;
+        }
+
+        header nav ul>li>a {
+            padding: 5px 10px;
+        }
+
+        header nav ul>li form button{
+            padding: 4px 8px;
+        }
+
+        header nav ul>li .auth{
+            padding: 6px 12px;
+        }
+    }
+
+
+    /* responsive height */
+    @media (max-height: 774px) {
+        main article .comments {
+            max-height: 600px;
+        }
     
+        main article .all-comments {
+            max-height: 515px;
+        }
+    }
+    
+    @media (max-height: 600px) {
+        main article .comments {
+            max-height: 500px;
+        }
+    
+        main article .all-comments {
+            max-height: 415px;
+        }
+    }
+    
+    @media (max-height: 480px) {
+        main article .comments {
+           max-height: 300px;
+        }
+    
+        main article .all-comments {
+            max-height: 215px;
+        }
     }

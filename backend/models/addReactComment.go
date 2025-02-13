@@ -2,26 +2,25 @@ package models
 
 import "database/sql"
 
+// AddReactInTheComment handles a user's reaction (like/dislike) to a comment, 
+// either inserting, updating, or deleting the reaction based on the current status.
 func AddReactInTheComment(db *sql.DB, status string, userID int, NewIdComment int) error {
 	Query := `
 	   SELECT cl.status
 	   FROM Comment_like cl
 	   WHERE ID_User = ? AND ID_Comment = ?; 
 	`
-	var statuss string
+	var statusFormDB string
 	var err error
-	err = db.QueryRow(Query, userID, NewIdComment).Scan(&statuss)
-	if err != nil && err != sql.ErrNoRows {
-		return err
-	}
+	db.QueryRow(Query, userID, NewIdComment).Scan(&statusFormDB)
 
-	if statuss == "" {
+	if statusFormDB == "" {
 		_, err = db.Exec("INSERT INTO comment_like VALUES (?,?,?,?)", nil, status, userID, NewIdComment)
 		if err != nil {
 			return err
 		}
 	} else {
-		if (statuss == "like" && status == "dislike") || (statuss == "dislike" && status == "like") {
+		if (statusFormDB == "like" && status == "dislike") || (statusFormDB == "dislike" && status == "like") {
 			_, err = db.Exec("UPDATE comment_like SET status = ? WHERE ID_User = ? AND ID_comment = ?", status, userID, NewIdComment)
 			if err != nil {
 				return err

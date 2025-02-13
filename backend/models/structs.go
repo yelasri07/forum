@@ -2,15 +2,20 @@ package models
 
 import "time"
 
-type AccessTokenResponse struct {
-	AccessToken string `json:"access_token"`
+type GetToken struct {
+	Token string `json:"access_token"`
 }
 
+type AskLink struct {
+	UserID   int
+	AuthType string
+}
+
+// errors
 type ErrorRegister struct {
-	ErrName                string
-	ErrEmail               string
-	ErrPassword            string
-	AlreadyLogedWithGithub string
+	ErrName     string
+	ErrEmail    string
+	ErrPassword string
 }
 
 type HomePage struct {
@@ -31,6 +36,7 @@ type PostCat struct {
 	ID              int
 	Title           string
 	Content         string
+	Image           []byte
 	DateCreation    time.Time
 	Date            string
 	Categories      string

@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+// GetTotalLikesByUser retrieves the total number of 'like' reactions given by a specific user.
 func GetTotalLikesByUser(db *sql.DB, userID int) (int, error) {
 	var countLikes int
 	err := db.QueryRow("SELECT COUNT(status) FROM Post_Like WHERE ID_User = ? AND status = 'like'", userID).Scan(&countLikes)
@@ -15,28 +16,30 @@ func GetTotalLikesByUser(db *sql.DB, userID int) (int, error) {
 	return countLikes, nil
 }
 
-func CountNbOfLikes(idPost int, db *sql.DB) (int , error) {
-    query := `
+// CountNbOfLikes retrieves the total number of 'like' reactions for a specific post.
+func CountNbOfLikes(idPost int, db *sql.DB) (int, error) {
+	query := `
         SELECT count(ID) FROM Post_Like
         WHERE ID_Post = ? AND status = ?
     `
-    var a int
-    err := db.QueryRow(query, idPost, "like").Scan(&a)
-    if err != nil {
-        return -1 , err
-    }
-    return a , nil
+	var a int
+	err := db.QueryRow(query, idPost, "like").Scan(&a)
+	if err != nil {
+		return -1, err
+	}
+	return a, nil
 }
 
-func CountNbOfDislikes(idPost int, db *sql.DB) (int , error) {
-    query := `
+// CountNbOfDislikes retrieves the total number of 'dislike' reactions for a specific post.
+func CountNbOfDislikes(idPost int, db *sql.DB) (int, error) {
+	query := `
         SELECT count(ID) FROM Post_Like
         WHERE ID_Post = ? AND status = ?
     `
-    var count int
-    err := db.QueryRow(query, idPost, "dislike").Scan(&count)
-    if err != nil {
-        return -1 , nil
-    }
-    return count , nil
+	var count int
+	err := db.QueryRow(query, idPost, "dislike").Scan(&count)
+	if err != nil {
+		return -1, nil
+	}
+	return count, nil
 }

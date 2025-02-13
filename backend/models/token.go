@@ -4,9 +4,11 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/google/uuid"
+	"github.com/gofrs/uuid"
 )
 
+// GenerateToken generates a new session token for a user, updates the user's session in the database,
+// and returns the generated token along with the expiration time.
 func GenerateToken(id int, db *sql.DB) (string, error) {
 	u2, err := uuid.NewV6()
 	if err != nil {

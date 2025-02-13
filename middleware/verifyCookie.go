@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// VerifyCookie checks the validity of the session cookie, ensuring it exists and is not expired.
+// If valid, it returns the cookie, otherwise, it returns an error.
 func VerifyCookie(r *http.Request, db *sql.DB) (*http.Cookie, error) {
 	cookie, err := r.Cookie("Token")
 	if err != nil {

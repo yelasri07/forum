@@ -2,11 +2,9 @@ package models
 
 import (
 	"database/sql"
-
-	"forum/utils"
 )
 
-// filter >By  user
+// GetAllPostCatByUser retrieves all posts created by a specific user, along with their categories and creator details.
 func GetAllPostCatByUser(db *sql.DB, userID int) ([]*PostCat, error) {
 	query := `
 	SELECT 
@@ -15,7 +13,8 @@ func GetAllPostCatByUser(db *sql.DB, userID int) ([]*PostCat, error) {
 		p.Content, 
 		p.DateCreation, 
 		GROUP_CONCAT(c.Name_Category, ' #') AS Categories, 
-		u.UserName
+		u.UserName,
+		p.Image
 	FROM 
 		Posts p
 	JOIN 
@@ -41,40 +40,17 @@ func GetAllPostCatByUser(db *sql.DB, userID int) ([]*PostCat, error) {
 
 	for rows.Next() {
 		var post PostCat
-		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.DateCreation, &post.Categories, &post.CreatedBy)
+		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.DateCreation, &post.Categories, &post.CreatedBy,&post.Image)
 		if err != nil {
 			return nil, err
 		}
 
-		post.Date = utils.DateFromat(post.DateCreation)
-
-		post.Like , err  = CountNbOfLikes(post.ID, db)
-		if err != nil {
-			return nil , err
-		}
-		post.Dislike, err  = CountNbOfDislikes(post.ID, db)
-		if err != nil {
-			return nil , err
-		}
-		comment, err := SelectTheComment(post.ID, userID, db)
+		err = postService(&post, db, userID)
 		if err != nil {
 			return nil, err
 		}
-		post.Comments = append(post.Comments, comment...)
-		post.NemberOfComment = len(post.Comments)
+
 		posts = append(posts, &post)
-		status := ""
-		if userID != -1 {
-			status, err = GetReaction(userID, "Post_Like", "ID_Post", post.ID, db)
-			if err != nil {
-				return nil, err
-			}
-			if status == "like" {
-				post.UserLiked = true
-			} else if status == "dislike" {
-				post.UserDisliked = true
-			}
-		}
 	}
 
 	if err = rows.Err(); err != nil {

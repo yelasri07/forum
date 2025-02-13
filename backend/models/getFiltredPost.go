@@ -3,10 +3,9 @@ package models
 import (
 	"database/sql"
 	"slices"
-
-	"forum/utils"
 )
 
+// GetPostByID retrieves a post by its ID along with its categories and creator details.
 func GetPostByID(db *sql.DB, postID, UserId int) (*PostCat, error) {
 	query := `
 	SELECT 
@@ -15,7 +14,8 @@ func GetPostByID(db *sql.DB, postID, UserId int) (*PostCat, error) {
 	p.Content, 
 	p.DateCreation, 
 	GROUP_CONCAT(c.Name_Category, ' #') AS Categories, 
-	u.UserName 
+	u.UserName,
+	p.Image
 	FROM Posts p 
 	JOIN 
 	PostCategory pc ON p.ID = pc.ID_Post 
@@ -29,52 +29,31 @@ func GetPostByID(db *sql.DB, postID, UserId int) (*PostCat, error) {
 		return nil, err
 	}
 	defer rows.Close()
+
 	var post PostCat
 	for rows.Next() {
 
-		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.DateCreation, &post.Categories, &post.CreatedBy)
+		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.DateCreation, &post.Categories, &post.CreatedBy,&post.Image)
 		if err != nil {
 			return nil, err
 		}
 
-		post.Like , err  = CountNbOfLikes(post.ID, db)
-		if err != nil {
-			return nil , err
-		}
-
-		post.Dislike, err = CountNbOfDislikes(post.ID, db)
-		if err != nil {
-			return nil , err
-		}
-		
-		comment, err := SelectTheComment(post.ID, UserId, db)
+		err = postService(&post, db, UserId)
 		if err != nil {
 			return nil, err
-		}
-
-		post.Comments = append(post.Comments, comment...)
-		post.NemberOfComment = len(post.Comments)
-
-		post.Date = utils.DateFromat(post.DateCreation)
-		status := ""
-		if UserId != -1 {
-			status, err = GetReaction(UserId, "Post_Like", "ID_Post", post.ID, db)
-			if err != nil {
-				return nil, err
-			}
-			if status == "like" {
-				post.UserLiked = true
-			} else if status == "dislike" {
-				post.UserDisliked = true
-			}
 		}
 
 	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
 	return &post, nil
 }
 
-// filter >By cat
-func GetPostIDsByCategory(db *sql.DB, ids *[]int, category string) error {
+// GetPostIDsByCategory retrieves post IDs that belong to a specific category and appends them to the provided slice if they are not already present.
+func GetPostIDsByCategory(db *sql.DB, category string, ids *[]int) error {
 	query := `
 		SELECT p.ID
 		FROM Posts p
@@ -92,7 +71,6 @@ func GetPostIDsByCategory(db *sql.DB, ids *[]int, category string) error {
 		if err := rows.Scan(&id); err != nil {
 			return err
 		}
-		
 		if !slices.Contains(*ids, id) {
 			*ids = append(*ids, id)
 		}

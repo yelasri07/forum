@@ -57,9 +57,14 @@ form .form .auth a {
 
 form .logo h1 {
   font-size: 6em;
-  color: var(--text);
   font-weight: 700;
 }
+
+form .logo h1 a {
+  text-decoration: none;
+  color: var(--text);
+}
+
 
 form .form {
   background-color: var(--text);
@@ -85,8 +90,12 @@ form .form .forum {
 
 form .form .forum h2 {
   font-size: 3.2em;
-  color: var(--background);
   font-weight: 700;
+}
+
+form .form .forum h2 a {
+  text-decoration: none;
+  color: var(--background);
 }
 
 form .form > div:not(.auth) {
@@ -176,11 +185,13 @@ form .form > div.auth-externe > a.google {
 }
 form .form > div.auth-externe > a.github:hover {
   background-color: var(--background);
+  cursor: pointer;
   color: var(--text);
 }
 form .form > div.auth-externe > a.google:hover {
   background-color: var(--btn2);
   color: var(--text);
+  cursor: pointer;
   border: 1px solid var(--btn2);
   .fa-google {
     color: var(--text);

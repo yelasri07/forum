@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"forum/cmd/routers"
 	"forum/database"
-	"forum/utils"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -17,9 +19,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		db.Close()
+		fmt.Println("\nServer closed succesfully")
+		os.Exit(0)
+	}()
+
 	routers.Router(db)
-	utils.LoadEnv(".env")
 	fmt.Println("http://localhost:8080/")
-	http.ListenAndServe(":8080", nil)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
