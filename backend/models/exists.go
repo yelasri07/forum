@@ -18,7 +18,7 @@ func UserExists(db *sql.DB, value string, searchBy string) (bool, error) {
 }
 
 // VerifyEmail checks if the given email exists in the database and returns the user ID if found.
-func VerifyEmail(db *sql.DB, Email string) (int, int, error) {
+func VerifyEmail(db *sql.DB, Email string) (int64, int, error) {
 	rows, err := db.Query("SELECT ID, AuthType FROM users WHERE Email = ?", Email)
 	if err != nil {
 		return -1, 0, err
@@ -26,7 +26,7 @@ func VerifyEmail(db *sql.DB, Email string) (int, int, error) {
 	defer rows.Close()
 
 	if rows.Next() {
-		var id int
+		var id int64
 		var AuthType int
 		err := rows.Scan(&id, &AuthType)
 		if err != nil {

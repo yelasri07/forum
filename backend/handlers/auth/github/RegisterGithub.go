@@ -42,7 +42,8 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	accessToken, err := GetAccessToken(code)
 	if err != nil {
-		handlers.RenderError(w, http.StatusInternalServerError)
+		_, err = http.Post("http://localhost:8080/logout", "application/json", nil)
+		fmt.Println(err)
 		return
 	}
 
@@ -80,15 +81,14 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	var id int64
 	if ID == -1 {
-		result, err := db.Exec("INSERT INTO Users (UserName, Email, Password, Created_At, Session, Expared_At) VALUES ( ?,?,?,?,?,?)", user.UserName, user.Email, "", time.Now(), "", nil)
+		result, err := db.Exec("INSERT INTO Users (UserName, Email, Password, Created_At, Session, Expared_At, AuthType) VALUES ( ?,?,?,?,?,?,?)", user.UserName, user.Email, "", time.Now(), "", nil, 1)
 		if err != nil {
 			handlers.RenderError(w, http.StatusInternalServerError)
 			return
 		}
 
-		id, err = result.LastInsertId()
+		ID, err = result.LastInsertId()
 		if err != nil {
 			handlers.RenderError(w, http.StatusInternalServerError)
 			return
@@ -105,7 +105,7 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 			http.SetCookie(w, cookie)
 
-			a := models.AskLink{UserID: ID, AuthType: "github"}
+			a := models.AskLink{UserID: int(ID), AuthType: "github"}
 			err = handlers.RenderTemplate(w, "askLink.html", a, http.StatusOK)
 			if err != nil {
 				handlers.RenderError(w, http.StatusInternalServerError)
@@ -116,7 +116,7 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		}
 	}
 
-	token, err := models.GenerateToken(int(id), db)
+	token, err := models.GenerateToken(int(ID), db)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return

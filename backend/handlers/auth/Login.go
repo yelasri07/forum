@@ -39,7 +39,7 @@ func Login(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	PasswordDatabase, err := models.GetPassword(db, ID)
+	PasswordDatabase, err := models.GetPassword(db, int(ID))
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
@@ -52,7 +52,7 @@ func Login(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	token, err := models.GenerateToken(ID, db)
+	token, err := models.GenerateToken(int(ID), db)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
