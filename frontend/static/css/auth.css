@@ -185,11 +185,13 @@ form .form > div.auth-externe > a.google {
 }
 form .form > div.auth-externe > a.github:hover {
   background-color: var(--background);
+  cursor: pointer;
   color: var(--text);
 }
 form .form > div.auth-externe > a.google:hover {
   background-color: var(--btn2);
   color: var(--text);
+  cursor: pointer;
   border: 1px solid var(--btn2);
   .fa-google {
     color: var(--text);
