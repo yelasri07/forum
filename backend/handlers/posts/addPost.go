@@ -32,9 +32,12 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	categories := r.Form["category"]
 	file, fileHeader, err := r.FormFile("image")
 
+	var requiredContent bool
+
 	image := []byte(nil)
 	if err == nil {
 		defer file.Close()
+		requiredContent = true
 		sizeInMB := float64(fileHeader.Size) / (1024 * 1024)
 		if sizeInMB > 20 || (!strings.HasSuffix(fileHeader.Filename, ".jpeg") &&
 			!strings.HasSuffix(fileHeader.Filename, ".svg") &&
@@ -53,7 +56,7 @@ func AddPost(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		image = append(image, img...)
 	}
 
-	if title == "" || content == "" || len(categories) == 0 || len([]rune(content)) > 1000 || len([]rune(title)) > 50 || !models.CheckCatExists(categories, db) {
+	if title == "" || (!requiredContent && content == "") || len(categories) == 0 || len([]rune(content)) > 1000 || len([]rune(title)) > 50 || !models.CheckCatExists(categories, db) {
 		handlers.RenderError(w, http.StatusBadRequest)
 		return
 	}
