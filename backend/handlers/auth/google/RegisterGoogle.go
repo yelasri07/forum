@@ -82,6 +82,10 @@ func getAccessToken(code string) (string, error) {
 		return "", err
 	}
 
+	if user.Token == "" {
+		return "", errors.New("no access token in response")
+	}
+
 	return user.Token, nil
 }
 

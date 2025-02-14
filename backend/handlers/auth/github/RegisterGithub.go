@@ -45,7 +45,6 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	fmt.Println(user)
 	if user.Email == "" {
 		email, err := getPrimaryEmail(accessToken)
 		if err != nil {
@@ -88,6 +87,7 @@ func GetDataUser(accessToken string) (*models.GithubUser, error) {
 	if err := json.Unmarshal(body, &user); err != nil {
 		return nil, err
 	}
+
 	return &user, nil
 }
 
@@ -100,6 +100,7 @@ func getAccessToken(code string) (string, error) {
 
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
@@ -118,8 +119,9 @@ func getAccessToken(code string) (string, error) {
 	if err := json.Unmarshal(body, &tokenResp); err != nil {
 		return "", err
 	}
+
 	if tokenResp.Token == "" {
-		return "", fmt.Errorf("no access token in response: %s", string(body))
+		return "", errors.New("no access token in response")
 	}
 
 	return tokenResp.Token, nil
@@ -150,7 +152,7 @@ func getPrimaryEmail(accessToken string) (string, error) {
 
 	var emails []models.GitHubEmail
 	if err := json.Unmarshal(body, &emails); err != nil {
-		return "", fmt.Errorf("parsing response: %w", err)
+		return "", err
 	}
 
 	for _, email := range emails {
@@ -159,5 +161,5 @@ func getPrimaryEmail(accessToken string) (string, error) {
 		}
 	}
 
-	return "", fmt.Errorf("no primary email found")
+	return "", errors.New("no primary email found")
 }
