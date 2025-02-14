@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -92,7 +93,7 @@ func GetDataUser(accessToken string) (*GithubUser, error) {
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return nil, err
+		return nil, errors.New("failed to fetch user data")
 	}
 
 	body, err := io.ReadAll(res.Body)
@@ -122,7 +123,7 @@ func getAccessToken(code string) (string, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return "", err
+		return "", errors.New("failed to fetch access token")
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -156,7 +157,7 @@ func getPrimaryEmail(accessToken string) (string, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", err
+		return "", errors.New("failed to fetch email user")
 	}
 
 	body, err := io.ReadAll(resp.Body)
