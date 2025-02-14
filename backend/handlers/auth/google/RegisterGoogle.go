@@ -38,11 +38,13 @@ func RegisterGoogle(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	_, err = getUserInfos(accessToken)
+	user, err := getUserInfos(accessToken)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
 	}
+
+	fmt.Println(user)
 }
 
 func getAccessToken(code string) (string, error) {
@@ -61,7 +63,7 @@ func getAccessToken(code string) (string, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return "", errors.New("err")
+		return "", errors.New("failed to fetch access token")
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -77,7 +79,7 @@ func getAccessToken(code string) (string, error) {
 	return user.Token, nil
 }
 
-func getUserInfos(accessToken string) (*github.GithubUser, error) {
+func getUserInfos(accessToken string) (*github.GoogleUser, error) {
 	req, err := http.NewRequest("GET", "https://www.googleapis.com/oauth2/v2/userinfo", nil)
 	if err != nil {
 		return nil, err
@@ -99,7 +101,10 @@ func getUserInfos(accessToken string) (*github.GithubUser, error) {
 		return nil, err
 	}
 
-	fmt.Println(string(body))
+	var user github.GoogleUser
+	if err := json.Unmarshal(body, &user); err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	return &user, nil
 }

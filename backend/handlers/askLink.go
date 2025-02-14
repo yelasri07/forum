@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"net/http"
 	"strconv"
+
+	"forum/backend/models"
 )
 
 func AskLink(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -12,7 +14,7 @@ func AskLink(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	token, err := r.Cookie("Token")
+	token, err := r.Cookie("UserID")
 	if err != nil {
 		http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
 		return
@@ -27,11 +29,24 @@ func AskLink(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
+	cookie := &http.Cookie{Name: "UserID", Value: "", MaxAge: -1, HttpOnly: true}
+	http.SetCookie(w, cookie)
+
 	_, err = db.Exec("UPDATE users SET AuthType = ? WHERE ID = ?", 1, UserID)
 	if err != nil {
 		RenderError(w, http.StatusInternalServerError)
 		return
 	}
+
+	token2, err := models.GenerateToken(UserID, db)
+	if err != nil {
+		RenderError(w, http.StatusInternalServerError)
+		return
+	}
+
+	cookie = &http.Cookie{Name: "Token", Value: token2, MaxAge: 3600, HttpOnly: true}
+
+	http.SetCookie(w, cookie)
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

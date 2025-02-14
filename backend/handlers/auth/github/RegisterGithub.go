@@ -6,13 +6,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"math/rand"
 	"net/http"
-	"strconv"
-	"strings"
-	"time"
 
 	"forum/backend/handlers"
+	"forum/backend/handlers/auth"
 	"forum/backend/models"
 )
 
@@ -23,6 +20,11 @@ const (
 
 type GithubUser struct {
 	UserName string `json:"login"`
+	Email    string `json:"email"`
+}
+
+type GoogleUser struct {
+	UserName string `json:"name"`
 	Email    string `json:"email"`
 }
 
@@ -47,7 +49,7 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	accessToken, err := getAccessToken(code)
 	if err != nil {
-		cookie := &http.Cookie{Name: "Token", Value: "", MaxAge: -1, HttpOnly: true}
+		cookie := &http.Cookie{Name: "UserID", Value: "", MaxAge: -1, HttpOnly: true}
 		http.SetCookie(w, cookie)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
@@ -68,74 +70,11 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		user.Email = email
 	}
 
-	user.UserName = strings.ReplaceAll(user.UserName, " ", "_")
-
-	isUniqueUserName, err := models.UserExists(db, user.UserName, " UserName ")
+	err = auth.VerifyAccount(w, r, user.UserName, user.Email, db)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return
 	}
-
-	for !isUniqueUserName {
-		user.UserName = strconv.Itoa(rand.Intn(1000)) + user.UserName + strconv.Itoa(rand.Intn(1000))
-		isUniqueUserName, err = models.UserExists(db, user.UserName, " UserName ")
-		if err != nil {
-			handlers.RenderError(w, http.StatusInternalServerError)
-			return
-		}
-	}
-
-	ID, AuthType, err := models.VerifyEmail(db, user.Email)
-	if err != nil {
-		handlers.RenderError(w, http.StatusInternalServerError)
-		return
-	}
-
-	if ID == -1 {
-		result, err := db.Exec("INSERT INTO Users (UserName, Email, Password, Created_At, Session, Expared_At, AuthType) VALUES ( ?,?,?,?,?,?,?)", user.UserName, user.Email, "", time.Now(), "", nil, 1)
-		if err != nil {
-			handlers.RenderError(w, http.StatusInternalServerError)
-			return
-		}
-
-		ID, err = result.LastInsertId()
-		if err != nil {
-			handlers.RenderError(w, http.StatusInternalServerError)
-			return
-		}
-	} else {
-		if AuthType == 0 {
-			token, err := models.GenerateToken(int(ID), db)
-			if err != nil {
-				handlers.RenderError(w, http.StatusInternalServerError)
-				return
-			}
-
-			cookie := &http.Cookie{Name: "Token", Value: token, MaxAge: 3600, HttpOnly: true}
-
-			http.SetCookie(w, cookie)
-
-			a := models.AskLink{UserID: int(ID), AuthType: "github"}
-			err = handlers.RenderTemplate(w, "askLink.html", a, http.StatusOK)
-			if err != nil {
-				handlers.RenderError(w, http.StatusInternalServerError)
-				return
-			}
-
-			return
-		}
-	}
-
-	token, err := models.GenerateToken(int(ID), db)
-	if err != nil {
-		handlers.RenderError(w, http.StatusInternalServerError)
-		return
-	}
-
-	cookie := &http.Cookie{Name: "Token", Value: token, MaxAge: 3600, HttpOnly: true}
-
-	http.SetCookie(w, cookie)
-	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func GetDataUser(accessToken string) (*GithubUser, error) {
@@ -159,7 +98,6 @@ func GetDataUser(accessToken string) (*GithubUser, error) {
 	if err != nil {
 		return nil, err
 	}
-	
 
 	var user GithubUser
 	if err := json.Unmarshal(body, &user); err != nil {
@@ -190,7 +128,7 @@ func getAccessToken(code string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	
+
 	var tokenResp models.GetToken
 	if err := json.Unmarshal(body, &tokenResp); err != nil {
 		return "", err
