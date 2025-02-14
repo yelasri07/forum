@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"forum/backend/handlers"
+	"forum/backend/handlers/auth"
 	"forum/backend/handlers/auth/github"
 	"forum/backend/models"
 )
@@ -34,7 +35,9 @@ func RegisterGoogle(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	accessToken, err := getAccessToken(code)
 	if err != nil {
-		handlers.RenderError(w, http.StatusInternalServerError)
+		cookie := &http.Cookie{Name: "UserID", Value: "", MaxAge: -1, HttpOnly: true}
+		http.SetCookie(w, cookie)
+		http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
 		return
 	}
 
@@ -44,7 +47,11 @@ func RegisterGoogle(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	fmt.Println(user)
+	err = auth.VerifyAccount(w, r, user.UserName, user.Email, db)
+	if err != nil {
+		handlers.RenderError(w, http.StatusInternalServerError)
+		return
+	}
 }
 
 func getAccessToken(code string) (string, error) {

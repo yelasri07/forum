@@ -18,5 +18,5 @@ func Logout(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	http.SetCookie(w, cookie)
 	http.SetCookie(w, cookie2)
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
 }

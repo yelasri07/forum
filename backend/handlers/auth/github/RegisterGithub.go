@@ -51,7 +51,7 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if err != nil {
 		cookie := &http.Cookie{Name: "UserID", Value: "", MaxAge: -1, HttpOnly: true}
 		http.SetCookie(w, cookie)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
 		return
 	}
 
