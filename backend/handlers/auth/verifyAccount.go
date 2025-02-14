@@ -21,7 +21,7 @@ func VerifyAccount(w http.ResponseWriter, r *http.Request, UserName, Email strin
 	}
 
 	for !isUniqueUserName {
-		UserName = strconv.Itoa(rand.Intn(999)) + UserName + strconv.Itoa(rand.Intn(999))
+		UserName = UserName + strconv.Itoa(rand.Intn(999))
 		isUniqueUserName, err = models.UserExists(db, UserName, " UserName ")
 		if err != nil {
 			return err
