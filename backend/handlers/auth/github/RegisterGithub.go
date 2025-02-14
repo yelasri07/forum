@@ -61,6 +61,7 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
+	fmt.Println(user.Email)
 	if user.Email == "" {
 		email, err := getPrimaryEmail(accessToken)
 		if err != nil {
