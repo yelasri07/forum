@@ -11,7 +11,6 @@ import (
 
 	"forum/backend/handlers"
 	"forum/backend/handlers/auth"
-	"forum/backend/handlers/auth/github"
 	"forum/backend/models"
 )
 
@@ -86,7 +85,7 @@ func getAccessToken(code string) (string, error) {
 	return user.Token, nil
 }
 
-func getUserInfos(accessToken string) (*github.GoogleUser, error) {
+func getUserInfos(accessToken string) (*models.GoogleUser, error) {
 	req, err := http.NewRequest("GET", "https://www.googleapis.com/oauth2/v2/userinfo", nil)
 	if err != nil {
 		return nil, err
@@ -108,7 +107,7 @@ func getUserInfos(accessToken string) (*github.GoogleUser, error) {
 		return nil, err
 	}
 
-	var user github.GoogleUser
+	var user models.GoogleUser
 	if err := json.Unmarshal(body, &user); err != nil {
 		return nil, err
 	}

@@ -11,6 +11,21 @@ type AskLink struct {
 	AuthType string
 }
 
+type GithubUser struct {
+	UserName string `json:"login"`
+	Email    string `json:"email"`
+}
+
+type GoogleUser struct {
+	UserName string `json:"name"`
+	Email    string `json:"email"`
+}
+
+type GitHubEmail struct {
+	Email   string `json:"email"`
+	Primary bool   `json:"primary"`
+}
+
 // errors
 type ErrorRegister struct {
 	ErrName     string

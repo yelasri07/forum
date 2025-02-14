@@ -19,23 +19,6 @@ const (
 	client_secret = "5926c995e7b3bc0c8ec52d04ccfd24ef2205c8c1"
 )
 
-type GithubUser struct {
-	UserName string `json:"login"`
-	Email    string `json:"email"`
-}
-
-type GoogleUser struct {
-	UserName string `json:"name"`
-	Email    string `json:"email"`
-}
-
-type GitHubEmail struct {
-	Email      string `json:"email"`
-	Primary    bool   `json:"primary"`
-	Verified   bool   `json:"verified"`
-	Visibility string `json:"visibility"`
-}
-
 func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method != http.MethodGet {
 		handlers.RenderError(w, http.StatusMethodNotAllowed)
@@ -62,7 +45,7 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	fmt.Println(user.Email)
+	fmt.Println(user)
 	if user.Email == "" {
 		email, err := getPrimaryEmail(accessToken)
 		if err != nil {
@@ -79,7 +62,7 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 }
 
-func GetDataUser(accessToken string) (*GithubUser, error) {
+func GetDataUser(accessToken string) (*models.GithubUser, error) {
 	req, err := http.NewRequest("GET", "https://api.github.com/user", nil)
 	if err != nil {
 		return nil, err
@@ -101,7 +84,7 @@ func GetDataUser(accessToken string) (*GithubUser, error) {
 		return nil, err
 	}
 
-	var user GithubUser
+	var user models.GithubUser
 	if err := json.Unmarshal(body, &user); err != nil {
 		return nil, err
 	}
@@ -165,7 +148,7 @@ func getPrimaryEmail(accessToken string) (string, error) {
 		return "", err
 	}
 
-	var emails []GitHubEmail
+	var emails []models.GitHubEmail
 	if err := json.Unmarshal(body, &emails); err != nil {
 		return "", fmt.Errorf("parsing response: %w", err)
 	}
