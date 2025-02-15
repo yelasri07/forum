@@ -54,7 +54,7 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		user.Email = email
 	}
 
-	err = auth.VerifyAccount(w, r, user.UserName, user.Email, db)
+	err = auth.VerifyAccount(w, r, user.UserName, user.Email, "github",db)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return

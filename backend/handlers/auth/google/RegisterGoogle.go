@@ -46,7 +46,7 @@ func RegisterGoogle(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	err = auth.VerifyAccount(w, r, user.UserName, user.Email, db)
+	err = auth.VerifyAccount(w, r, user.UserName, user.Email, "google" ,db)
 	if err != nil {
 		handlers.RenderError(w, http.StatusInternalServerError)
 		return

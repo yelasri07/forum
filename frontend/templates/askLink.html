@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authorization Required</title>
     <link rel="stylesheet" href="frontend/static/css/askLink.css">
+    <link rel="shortcut icon" href="frontend/static/images/icon.png" type="image/x-icon" />
 </head>
 <body>
     
     <div class="container">
         <h2>Account Authorization</h2>
-        <p class="description">You are attempting to access a protected resource. Please confirm your action.</p>
+        <p class="description">You are attempting to access a protected resource. 
+            Please confirm your action by signing in with <strong>{{.AuthType}}</strong></p>
         
         <form action="/askLink" method="post">
             <input type="hidden" name="accept" value="{{.UserID}}" required>

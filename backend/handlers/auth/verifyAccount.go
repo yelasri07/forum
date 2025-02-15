@@ -12,7 +12,7 @@ import (
 	"forum/backend/models"
 )
 
-func VerifyAccount(w http.ResponseWriter, r *http.Request, UserName, Email string, db *sql.DB) error {
+func VerifyAccount(w http.ResponseWriter, r *http.Request, UserName, Email, authType string, db *sql.DB) error {
 	UserName = strings.ReplaceAll(UserName, " ", "_")
 
 	isUniqueUserName, err := models.UserExists(db, UserName, " UserName ")
@@ -54,7 +54,7 @@ func VerifyAccount(w http.ResponseWriter, r *http.Request, UserName, Email strin
 
 			http.SetCookie(w, cookie)
 
-			a := models.AskLink{UserID: int(ID), AuthType: "github"}
+			a := models.AskLink{UserID: int(ID), AuthType: authType}
 			err = handlers.RenderTemplate(w, "askLink.html", a, http.StatusOK)
 			if err != nil {
 				return err
