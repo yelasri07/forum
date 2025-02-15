@@ -89,7 +89,7 @@ func Verify(w http.ResponseWriter, isUniqueUserName, isUniqueEmail bool, Email, 
 	if !isUniqueEmail {
 		e.ErrEmail = "Email Already taken please chose Another"
 	}
-	if !utils.IsValidEmail(Email) {
+	if !utils.IsValidEmail(Email) || len([]rune(Email)) > 200 {
 		e.ErrEmail = "Email must be in the format: example@example.example"
 	}
 	if e.ErrEmail != "" || e.ErrName != "" || e.ErrPassword != "" {
