@@ -11,8 +11,7 @@
     
     <div class="container">
         <h2>Account Authorization</h2>
-        <p class="description">You are attempting to access a protected resource. 
-            Please confirm your action by signing in with <strong>{{.AuthType}}</strong></p>
+        <p class="description">By linking your <strong>{{.AuthType}}</strong> account, we will switch your authentication method for accessing your Forum account from email address to Log in with <strong>{{.AuthType}}</strong>. Moving forward, your credentials, personal information, and  authentication will be managed by your <strong>{{.AuthType}}</strong> account.</p>
         
         <form action="/askLink" method="post">
             <input type="hidden" name="accept" value="{{.UserID}}" required>
