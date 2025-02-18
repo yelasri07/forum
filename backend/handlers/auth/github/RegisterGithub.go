@@ -27,7 +27,7 @@ func RegisterGithub(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	code := r.URL.Query().Get("code")
 	if code == "" {
-		handlers.RenderError(w, http.StatusBadRequest)
+		http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
 		return
 	}
 
